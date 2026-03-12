@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+.venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Large data (re-export via GEE)
+data/raw/
+data/processed/
+*.tif
+*.tiff
+*.nc
+
+# OS
+.DS_Store
+Thumbs.db
