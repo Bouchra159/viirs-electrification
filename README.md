@@ -71,7 +71,7 @@ within-country electrification gaps.
 ## Repository Structure
 
 ```
-viirs-electrification-ml/
+viirs-electrification/
 │
 ├── scripts/
 │   ├── gee_export.js           # GEE JavaScript: VIIRS + WorldPop export pipeline
@@ -145,8 +145,8 @@ in the electrification trajectory.
 
 ```bash
 # Clone this repository
-git clone https://github.com/Bouchra159/viirs-electrification-ml.git
-cd viirs-electrification-ml
+git clone https://github.com/Bouchra159/viirs-electrification.git
+cd viirs-electrification
 
 # Install dependencies
 pip install -r requirements.txt
@@ -200,7 +200,7 @@ If you use this code or methodology in your work, please cite:
                Using VIIRS Nighttime Lights},
   year      = {2025},
   publisher = {GitHub},
-  url       = {https://github.com/Bouchra159/viirs-electrification-ml}
+  url       = {https://github.com/Bouchra159/viirs-electrification}
 }
 ```
 
