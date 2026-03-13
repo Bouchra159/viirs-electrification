@@ -252,7 +252,7 @@ See [`scripts/qgis_workflow.md`](scripts/qgis_workflow.md) for:
 
 ---
 
-## Relevance to Computational Social Science
+## Relevance
 
 This project sits at the intersection of **remote sensing, spatial econometrics, and development economics**:
 
