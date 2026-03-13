@@ -1,0 +1,63 @@
+cff-version: 1.2.0
+message: >-
+  If you use this code or methodology in your research, please cite it using
+  the metadata in this file.
+type: software
+title: >-
+  Electrification Inequality from Space: A Multi-Country Spatial ML Analysis
+  Using VIIRS Nighttime Lights
+abstract: >-
+  An open-source research pipeline that investigates spatial and temporal
+  dynamics of electrification inequality across Brazil, China, and Morocco
+  (2014–2023) using VIIRS DNB nighttime light imagery as a proxy for
+  electricity access. Methods include spatial econometrics (Moran's I, LISA,
+  spatial lag/error models), geographically weighted regression (GWR/MGWR),
+  interpretable machine learning (XGBoost + SHAP), temporal change-point
+  analysis (Mann-Kendall, CUSUM), and inequality metrics (Gini, Lorenz,
+  Theil T decomposition) aligned with UN SDG 7.
+authors:
+  - family-names: Daddaoui
+    given-names: Bouchra
+    email: bouchra1daddaoui@gmail.com
+    orcid: ""
+repository-code: https://github.com/Bouchra159/viirs-electrification
+url: https://github.com/Bouchra159/viirs-electrification
+license: MIT
+date-released: "2025-03-01"
+version: "1.0.0"
+keywords:
+  - nighttime lights
+  - VIIRS
+  - electrification
+  - spatial econometrics
+  - geographically weighted regression
+  - XGBoost
+  - SHAP
+  - inequality
+  - SDG 7
+  - Google Earth Engine
+  - QGIS
+  - remote sensing
+  - Brazil
+  - China
+  - Morocco
+  - Western Sahara
+references:
+  - type: software
+    title: "Google Earth Engine"
+    authors:
+      - family-names: Gorelick
+        given-names: Noel
+    url: https://earthengine.google.com
+  - type: software
+    title: "mgwr: Multiscale Geographically Weighted Regression"
+    authors:
+      - family-names: Oshan
+        given-names: Taylor M.
+    url: https://github.com/pysal/mgwr
+  - type: software
+    title: "esda: Exploratory Spatial Data Analysis"
+    authors:
+      - family-names: Rey
+        given-names: Sergio
+    url: https://github.com/pysal/esda
