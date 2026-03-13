@@ -26,6 +26,7 @@ plotly>=5.15
 contextily>=1.4
 folium>=0.15
 branca>=0.7
+pydeck>=0.9
 
 # Notebooks
 jupyter>=1.0

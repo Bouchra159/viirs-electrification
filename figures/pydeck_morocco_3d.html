@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.0.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "bearing": -20,
+    "latitude": 28.35,
+    "longitude": -9.05,
+    "pitch": 45,
+    "zoom": 5
+  },
+  "layers": [
+    {
+      "@@type": "ColumnLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 32691.66222296197,
+          "energy_class": "Electrified",
+          "lat": 21.555,
+          "lon": -16.295,
+          "ntl_mean": 16.345831111480987,
+          "tile_id": "MOR_00_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 23519.22392265221,
+          "energy_class": "Electrified",
+          "lat": 21.555,
+          "lon": -14.685000000000002,
+          "ntl_mean": 11.759611961326105,
+          "tile_id": "MOR_00_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 23750.53150734037,
+          "energy_class": "Electrified",
+          "lat": 21.555,
+          "lon": -13.075000000000001,
+          "ntl_mean": 11.875265753670185,
+          "tile_id": "MOR_00_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 19926.012894552834,
+          "energy_class": "Electrified",
+          "lat": 21.555,
+          "lon": -11.465,
+          "ntl_mean": 9.963006447276417,
+          "tile_id": "MOR_00_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 5208.53672912801,
+          "energy_class": "Energy poor",
+          "lat": 21.555,
+          "lon": -9.855000000000002,
+          "ntl_mean": 2.604268364564005,
+          "tile_id": "MOR_00_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 14431.60075101741,
+          "energy_class": "Energy poor",
+          "lat": 21.555,
+          "lon": -8.245000000000001,
+          "ntl_mean": 7.215800375508705,
+          "tile_id": "MOR_00_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 10600.52138401974,
+          "energy_class": "Energy poor",
+          "lat": 21.555,
+          "lon": -6.635,
+          "ntl_mean": 5.30026069200987,
+          "tile_id": "MOR_00_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 6611.639696592093,
+          "energy_class": "Energy poor",
+          "lat": 21.555,
+          "lon": -5.025,
+          "ntl_mean": 3.3058198482960464,
+          "tile_id": "MOR_00_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 10100.558706134343,
+          "energy_class": "Energy poor",
+          "lat": 21.555,
+          "lon": -3.415000000000001,
+          "ntl_mean": 5.050279353067172,
+          "tile_id": "MOR_00_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 5294.09103730438,
+          "energy_class": "Energy poor",
+          "lat": 21.555,
+          "lon": -1.8050000000000004,
+          "ntl_mean": 2.64704551865219,
+          "tile_id": "MOR_00_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 16682.42086968367,
+          "energy_class": "Electrified",
+          "lat": 23.065,
+          "lon": -16.295,
+          "ntl_mean": 8.341210434841834,
+          "tile_id": "MOR_01_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 20071.40730026267,
+          "energy_class": "Electrified",
+          "lat": 23.064999999999998,
+          "lon": -14.685000000000002,
+          "ntl_mean": 10.035703650131333,
+          "tile_id": "MOR_01_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 11818.048707374135,
+          "energy_class": "Energy poor",
+          "lat": 23.065,
+          "lon": -13.075000000000001,
+          "ntl_mean": 5.909024353687068,
+          "tile_id": "MOR_01_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 7223.040245418506,
+          "energy_class": "Energy poor",
+          "lat": 23.064999999999998,
+          "lon": -11.465000000000003,
+          "ntl_mean": 3.611520122709253,
+          "tile_id": "MOR_01_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 23.065,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_01_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 5205.642488892092,
+          "energy_class": "Energy poor",
+          "lat": 23.065,
+          "lon": -8.245000000000001,
+          "ntl_mean": 2.602821244446046,
+          "tile_id": "MOR_01_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 13523.715138601885,
+          "energy_class": "Energy poor",
+          "lat": 23.064999999999998,
+          "lon": -6.635000000000002,
+          "ntl_mean": 6.761857569300942,
+          "tile_id": "MOR_01_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 1821.9296053340556,
+          "energy_class": "Energy poor",
+          "lat": 23.065,
+          "lon": -5.025,
+          "ntl_mean": 0.9109648026670278,
+          "tile_id": "MOR_01_07"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 16267.9527007084,
+          "energy_class": "Electrified",
+          "lat": 23.065,
+          "lon": -3.415000000000001,
+          "ntl_mean": 8.1339763503542,
+          "tile_id": "MOR_01_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 12896.449995412286,
+          "energy_class": "Energy poor",
+          "lat": 23.064999999999998,
+          "lon": -1.8050000000000006,
+          "ntl_mean": 6.448224997706143,
+          "tile_id": "MOR_01_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 24879.06752066879,
+          "energy_class": "Electrified",
+          "lat": 24.574999999999996,
+          "lon": -16.295,
+          "ntl_mean": 12.439533760334394,
+          "tile_id": "MOR_02_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 23302.647092010197,
+          "energy_class": "Electrified",
+          "lat": 24.575,
+          "lon": -14.685000000000002,
+          "ntl_mean": 11.651323546005099,
+          "tile_id": "MOR_02_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 11307.409692619198,
+          "energy_class": "Energy poor",
+          "lat": 24.574999999999996,
+          "lon": -13.075000000000001,
+          "ntl_mean": 5.653704846309599,
+          "tile_id": "MOR_02_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 3454.396470280983,
+          "energy_class": "Energy poor",
+          "lat": 24.575,
+          "lon": -11.465000000000003,
+          "ntl_mean": 1.7271982351404915,
+          "tile_id": "MOR_02_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 24.574999999999996,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_02_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 24.574999999999996,
+          "lon": -8.245000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_02_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 24.575,
+          "lon": -6.635000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_02_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 24.574999999999996,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_02_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 420.8183785387156,
+          "energy_class": "Energy poor",
+          "lat": 24.574999999999996,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.2104091892693578,
+          "tile_id": "MOR_02_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 24.575,
+          "lon": -1.8050000000000006,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_02_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 24644.04153370718,
+          "energy_class": "Electrified",
+          "lat": 26.085000000000004,
+          "lon": -16.295,
+          "ntl_mean": 12.322020766853589,
+          "tile_id": "MOR_03_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 24481.67157017219,
+          "energy_class": "Electrified",
+          "lat": 26.085,
+          "lon": -14.685000000000002,
+          "ntl_mean": 12.240835785086096,
+          "tile_id": "MOR_03_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 21214.44195284439,
+          "energy_class": "Electrified",
+          "lat": 26.085000000000004,
+          "lon": -13.075000000000001,
+          "ntl_mean": 10.607220976422195,
+          "tile_id": "MOR_03_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 480.93667054677525,
+          "energy_class": "Energy poor",
+          "lat": 26.085,
+          "lon": -11.465,
+          "ntl_mean": 0.24046833527338762,
+          "tile_id": "MOR_03_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 26.085000000000004,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_03_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 26.085000000000004,
+          "lon": -8.245000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_03_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 26.085,
+          "lon": -6.635,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_03_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 26.085000000000004,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_03_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 26.085000000000004,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_03_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 863.6485140681493,
+          "energy_class": "Energy poor",
+          "lat": 26.085,
+          "lon": -1.8050000000000004,
+          "ntl_mean": 0.4318242570340747,
+          "tile_id": "MOR_03_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 16249.507874991992,
+          "energy_class": "Electrified",
+          "lat": 27.595000000000002,
+          "lon": -16.295,
+          "ntl_mean": 8.124753937495996,
+          "tile_id": "MOR_04_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 20063.29558088681,
+          "energy_class": "Electrified",
+          "lat": 27.594999999999995,
+          "lon": -14.685000000000002,
+          "ntl_mean": 10.031647790443404,
+          "tile_id": "MOR_04_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 8666.426305265099,
+          "energy_class": "Energy poor",
+          "lat": 27.595000000000002,
+          "lon": -13.075000000000001,
+          "ntl_mean": 4.333213152632549,
+          "tile_id": "MOR_04_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.594999999999995,
+          "lon": -11.465,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.595000000000002,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.595000000000002,
+          "lon": -8.245000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.594999999999995,
+          "lon": -6.635,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.595000000000002,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.595000000000002,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 27.594999999999995,
+          "lon": -1.8050000000000004,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_04_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 14159.68677074773,
+          "energy_class": "Energy poor",
+          "lat": 29.104999999999997,
+          "lon": -16.295,
+          "ntl_mean": 7.079843385373866,
+          "tile_id": "MOR_05_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 25511.28926140921,
+          "energy_class": "Electrified",
+          "lat": 29.105,
+          "lon": -14.685000000000002,
+          "ntl_mean": 12.755644630704605,
+          "tile_id": "MOR_05_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 16078.235384492558,
+          "energy_class": "Energy poor",
+          "lat": 29.104999999999997,
+          "lon": -13.075000000000001,
+          "ntl_mean": 8.039117692246279,
+          "tile_id": "MOR_05_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 16956.894081971146,
+          "energy_class": "Electrified",
+          "lat": 29.105,
+          "lon": -11.465000000000003,
+          "ntl_mean": 8.478447040985573,
+          "tile_id": "MOR_05_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 29.104999999999997,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_05_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 10927.810923721012,
+          "energy_class": "Energy poor",
+          "lat": 29.104999999999997,
+          "lon": -8.245000000000001,
+          "ntl_mean": 5.463905461860506,
+          "tile_id": "MOR_05_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 29.105,
+          "lon": -6.635000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_05_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 29.104999999999997,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_05_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 29.104999999999997,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_05_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 29.105,
+          "lon": -1.8050000000000006,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_05_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 20228.048582724547,
+          "energy_class": "Electrified",
+          "lat": 30.614999999999995,
+          "lon": -16.295,
+          "ntl_mean": 10.114024291362274,
+          "tile_id": "MOR_06_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 28520.692090930996,
+          "energy_class": "Electrified",
+          "lat": 30.615,
+          "lon": -14.685000000000002,
+          "ntl_mean": 14.260346045465498,
+          "tile_id": "MOR_06_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 19153.829449757846,
+          "energy_class": "Electrified",
+          "lat": 30.614999999999995,
+          "lon": -13.075000000000001,
+          "ntl_mean": 9.576914724878923,
+          "tile_id": "MOR_06_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 22643.186809834493,
+          "energy_class": "Electrified",
+          "lat": 30.615,
+          "lon": -11.465000000000003,
+          "ntl_mean": 11.321593404917246,
+          "tile_id": "MOR_06_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 1719.7995480158036,
+          "energy_class": "Energy poor",
+          "lat": 30.614999999999995,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.8598997740079017,
+          "tile_id": "MOR_06_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 7649.590284908255,
+          "energy_class": "Energy poor",
+          "lat": 30.614999999999995,
+          "lon": -8.245000000000001,
+          "ntl_mean": 3.8247951424541276,
+          "tile_id": "MOR_06_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 4244.303545007867,
+          "energy_class": "Energy poor",
+          "lat": 30.615,
+          "lon": -6.635000000000002,
+          "ntl_mean": 2.1221517725039334,
+          "tile_id": "MOR_06_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 30.614999999999995,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_06_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 30.614999999999995,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_06_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 30.615,
+          "lon": -1.8050000000000006,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_06_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 21504.548517867275,
+          "energy_class": "Electrified",
+          "lat": 32.125,
+          "lon": -16.295,
+          "ntl_mean": 10.752274258933637,
+          "tile_id": "MOR_07_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 30716.231266883362,
+          "energy_class": "Electrified",
+          "lat": 32.125,
+          "lon": -14.685000000000002,
+          "ntl_mean": 15.358115633441681,
+          "tile_id": "MOR_07_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 26704.638279496794,
+          "energy_class": "Electrified",
+          "lat": 32.125,
+          "lon": -13.075000000000001,
+          "ntl_mean": 13.352319139748397,
+          "tile_id": "MOR_07_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 16161.724381461376,
+          "energy_class": "Electrified",
+          "lat": 32.125,
+          "lon": -11.465000000000003,
+          "ntl_mean": 8.080862190730688,
+          "tile_id": "MOR_07_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 8547.97609505329,
+          "energy_class": "Energy poor",
+          "lat": 32.125,
+          "lon": -9.855000000000002,
+          "ntl_mean": 4.273988047526645,
+          "tile_id": "MOR_07_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 15217.4419882635,
+          "energy_class": "Energy poor",
+          "lat": 32.125,
+          "lon": -8.245000000000001,
+          "ntl_mean": 7.608720994131749,
+          "tile_id": "MOR_07_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 32.125,
+          "lon": -6.635000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_07_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 32.125,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_07_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 32.125,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_07_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 32.125,
+          "lon": -1.8050000000000006,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_07_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 10910.268433932426,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -16.295,
+          "ntl_mean": 5.455134216966213,
+          "tile_id": "MOR_08_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 9789.459898413248,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -14.685000000000002,
+          "ntl_mean": 4.894729949206624,
+          "tile_id": "MOR_08_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 4521.768463673574,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -13.075000000000001,
+          "ntl_mean": 2.260884231836787,
+          "tile_id": "MOR_08_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 4229.488608823574,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -11.465000000000002,
+          "ntl_mean": 2.1147443044117873,
+          "tile_id": "MOR_08_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 2198.795958746503,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -9.854999999999999,
+          "ntl_mean": 1.0993979793732516,
+          "tile_id": "MOR_08_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 8441.753169183447,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -8.245000000000001,
+          "ntl_mean": 4.220876584591723,
+          "tile_id": "MOR_08_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 3313.372370127638,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -6.635000000000001,
+          "ntl_mean": 1.656686185063819,
+          "tile_id": "MOR_08_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_08_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_08_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 33.635,
+          "lon": -1.8050000000000004,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_08_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 16785.380879396555,
+          "energy_class": "Electrified",
+          "lat": 35.144999999999996,
+          "lon": -16.295,
+          "ntl_mean": 8.392690439698278,
+          "tile_id": "MOR_09_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 6954.6674366171,
+          "energy_class": "Energy poor",
+          "lat": 35.145,
+          "lon": -14.685000000000002,
+          "ntl_mean": 3.47733371830855,
+          "tile_id": "MOR_09_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 5290.014229882987,
+          "energy_class": "Energy poor",
+          "lat": 35.144999999999996,
+          "lon": -13.075000000000001,
+          "ntl_mean": 2.6450071149414933,
+          "tile_id": "MOR_09_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 35.145,
+          "lon": -11.465000000000003,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_09_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 35.144999999999996,
+          "lon": -9.855000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_09_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 827.7003739792548,
+          "energy_class": "Energy poor",
+          "lat": 35.144999999999996,
+          "lon": -8.245000000000001,
+          "ntl_mean": 0.4138501869896274,
+          "tile_id": "MOR_09_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 35.145,
+          "lon": -6.635000000000002,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_09_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 35.144999999999996,
+          "lon": -5.025,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_09_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 35.144999999999996,
+          "lon": -3.415000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_09_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Energy poor",
+          "lat": 35.145,
+          "lon": -1.8050000000000006,
+          "ntl_mean": 0.0,
+          "tile_id": "MOR_09_09"
+        }
+      ],
+      "elevationScale": 1,
+      "extruded": true,
+      "getElevation": "@@=elevation",
+      "getFillColor": "@@=colour",
+      "getPosition": "@@=[lon, lat]",
+      "id": "c129765f-6ca2-4906-997a-f0b8be523cb6",
+      "pickable": true,
+      "radius": 75000
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "mapbox://styles/mapbox/dark-v10",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': '<b>{tile_id}</b><br>NTL: {ntl_mean:.1f}<br>Class: {energy_class}', 'style': {'backgroundColor': '#1a1a2e', 'color': 'white', 'fontSize': '12px'}};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>

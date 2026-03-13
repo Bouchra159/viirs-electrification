@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.0.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "bearing": -20,
+    "latitude": -20.5,
+    "longitude": -45.5,
+    "pitch": 45,
+    "zoom": 5
+  },
+  "layers": [
+    {
+      "@@type": "ColumnLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 16603.928106213225,
+          "energy_class": "Energy poor",
+          "lat": -22.75,
+          "lon": -47.75,
+          "ntl_mean": 8.301964053106612,
+          "tile_id": "BRA_00_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 17036.126073746305,
+          "energy_class": "Energy poor",
+          "lat": -22.75,
+          "lon": -47.25,
+          "ntl_mean": 8.518063036873153,
+          "tile_id": "BRA_00_01"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Low pop / unlit",
+          "lat": -22.75,
+          "lon": -46.75,
+          "ntl_mean": 0.0,
+          "tile_id": "BRA_00_02"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 4758.614273182819,
+          "energy_class": "Low pop / unlit",
+          "lat": -22.75,
+          "lon": -46.25,
+          "ntl_mean": 2.379307136591409,
+          "tile_id": "BRA_00_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 24037.175845397138,
+          "energy_class": "Energy poor",
+          "lat": -22.75,
+          "lon": -45.75,
+          "ntl_mean": 12.018587922698568,
+          "tile_id": "BRA_00_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 26554.209704014233,
+          "energy_class": "Energy poor",
+          "lat": -22.75,
+          "lon": -45.25,
+          "ntl_mean": 13.277104852007117,
+          "tile_id": "BRA_00_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 27646.63542270829,
+          "energy_class": "Energy poor",
+          "lat": -22.75,
+          "lon": -44.75,
+          "ntl_mean": 13.823317711354145,
+          "tile_id": "BRA_00_06"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 38599.39641440083,
+          "energy_class": "Electrified",
+          "lat": -22.75,
+          "lon": -44.25,
+          "ntl_mean": 19.299698207200414,
+          "tile_id": "BRA_00_07"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 37352.472783082645,
+          "energy_class": "Electrified",
+          "lat": -22.75,
+          "lon": -43.75,
+          "ntl_mean": 18.676236391541323,
+          "tile_id": "BRA_00_08"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 42166.837072047754,
+          "energy_class": "Electrified",
+          "lat": -22.75,
+          "lon": -43.25,
+          "ntl_mean": 21.083418536023878,
+          "tile_id": "BRA_00_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 10221.6496541133,
+          "energy_class": "Low pop / unlit",
+          "lat": -22.25,
+          "lon": -47.75,
+          "ntl_mean": 5.11082482705665,
+          "tile_id": "BRA_01_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 27442.250905618457,
+          "energy_class": "Energy poor",
+          "lat": -22.25,
+          "lon": -47.25,
+          "ntl_mean": 13.721125452809229,
+          "tile_id": "BRA_01_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 16476.222802027933,
+          "energy_class": "Energy poor",
+          "lat": -22.25,
+          "lon": -46.75,
+          "ntl_mean": 8.238111401013967,
+          "tile_id": "BRA_01_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 19973.605141896085,
+          "energy_class": "Energy poor",
+          "lat": -22.25,
+          "lon": -46.25,
+          "ntl_mean": 9.986802570948043,
+          "tile_id": "BRA_01_03"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 9286.517804354897,
+          "energy_class": "Low pop / unlit",
+          "lat": -22.25,
+          "lon": -45.75,
+          "ntl_mean": 4.643258902177449,
+          "tile_id": "BRA_01_04"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 4891.90798387428,
+          "energy_class": "Low pop / unlit",
+          "lat": -22.25,
+          "lon": -45.25,
+          "ntl_mean": 2.44595399193714,
+          "tile_id": "BRA_01_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 15514.309813120424,
+          "energy_class": "Energy poor",
+          "lat": -22.25,
+          "lon": -44.75,
+          "ntl_mean": 7.757154906560213,
+          "tile_id": "BRA_01_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 25270.810268678764,
+          "energy_class": "Energy poor",
+          "lat": -22.25,
+          "lon": -44.25,
+          "ntl_mean": 12.635405134339383,
+          "tile_id": "BRA_01_07"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 30907.47425441362,
+          "energy_class": "Electrified",
+          "lat": -22.25,
+          "lon": -43.75,
+          "ntl_mean": 15.45373712720681,
+          "tile_id": "BRA_01_08"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 38848.20236605263,
+          "energy_class": "Electrified",
+          "lat": -22.25,
+          "lon": -43.25,
+          "ntl_mean": 19.424101183026316,
+          "tile_id": "BRA_01_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 9204.68182417067,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.75,
+          "lon": -47.75,
+          "ntl_mean": 4.602340912085335,
+          "tile_id": "BRA_02_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 19136.5070773963,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -47.25,
+          "ntl_mean": 9.568253538698151,
+          "tile_id": "BRA_02_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 28580.42598220603,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -46.75,
+          "ntl_mean": 14.290212991103015,
+          "tile_id": "BRA_02_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 16608.734824669475,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -46.25,
+          "ntl_mean": 8.304367412334738,
+          "tile_id": "BRA_02_03"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 4582.334433526007,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.75,
+          "lon": -45.75,
+          "ntl_mean": 2.2911672167630037,
+          "tile_id": "BRA_02_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 24514.75994235849,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -45.25,
+          "ntl_mean": 12.257379971179246,
+          "tile_id": "BRA_02_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 16096.835296779936,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -44.75,
+          "ntl_mean": 8.048417648389968,
+          "tile_id": "BRA_02_06"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 9344.629761708358,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.75,
+          "lon": -44.25,
+          "ntl_mean": 4.672314880854179,
+          "tile_id": "BRA_02_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 24482.468714701852,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -43.75,
+          "ntl_mean": 12.241234357350926,
+          "tile_id": "BRA_02_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 29342.9087136714,
+          "energy_class": "Energy poor",
+          "lat": -21.75,
+          "lon": -43.25,
+          "ntl_mean": 14.6714543568357,
+          "tile_id": "BRA_02_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 12370.482433826566,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.25,
+          "lon": -47.75,
+          "ntl_mean": 6.185241216913283,
+          "tile_id": "BRA_03_00"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 8674.019233208988,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.25,
+          "lon": -47.25,
+          "ntl_mean": 4.337009616604494,
+          "tile_id": "BRA_03_01"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 5814.312265191226,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.25,
+          "lon": -46.75,
+          "ntl_mean": 2.9071561325956132,
+          "tile_id": "BRA_03_02"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 12000.60446826567,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.25,
+          "lon": -46.25,
+          "ntl_mean": 6.000302234132835,
+          "tile_id": "BRA_03_03"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 5105.422532517831,
+          "energy_class": "Low pop / unlit",
+          "lat": -21.25,
+          "lon": -45.75,
+          "ntl_mean": 2.5527112662589158,
+          "tile_id": "BRA_03_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 18021.4351950986,
+          "energy_class": "Energy poor",
+          "lat": -21.25,
+          "lon": -45.25,
+          "ntl_mean": 9.010717597549299,
+          "tile_id": "BRA_03_05"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 35248.78375237367,
+          "energy_class": "Electrified",
+          "lat": -21.25,
+          "lon": -44.75,
+          "ntl_mean": 17.624391876186834,
+          "tile_id": "BRA_03_06"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 36313.09743076972,
+          "energy_class": "Electrified",
+          "lat": -21.25,
+          "lon": -44.25,
+          "ntl_mean": 18.156548715384858,
+          "tile_id": "BRA_03_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 27338.43681031844,
+          "energy_class": "Energy poor",
+          "lat": -21.25,
+          "lon": -43.75,
+          "ntl_mean": 13.669218405159219,
+          "tile_id": "BRA_03_08"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 39581.92029949501,
+          "energy_class": "Electrified",
+          "lat": -21.25,
+          "lon": -43.25,
+          "ntl_mean": 19.790960149747505,
+          "tile_id": "BRA_03_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 16888.326048462503,
+          "energy_class": "Energy poor",
+          "lat": -20.75,
+          "lon": -47.75,
+          "ntl_mean": 8.444163024231251,
+          "tile_id": "BRA_04_00"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 8720.885646819688,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.75,
+          "lon": -47.25,
+          "ntl_mean": 4.360442823409844,
+          "tile_id": "BRA_04_01"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 12636.059942571432,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.75,
+          "lon": -46.75,
+          "ntl_mean": 6.318029971285716,
+          "tile_id": "BRA_04_02"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.75,
+          "lon": -46.25,
+          "ntl_mean": 0.0,
+          "tile_id": "BRA_04_03"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 5510.0466638105945,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.75,
+          "lon": -45.75,
+          "ntl_mean": 2.7550233319052975,
+          "tile_id": "BRA_04_04"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 14196.41062472837,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.75,
+          "lon": -45.25,
+          "ntl_mean": 7.098205312364185,
+          "tile_id": "BRA_04_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 26690.19687286631,
+          "energy_class": "Energy poor",
+          "lat": -20.75,
+          "lon": -44.75,
+          "ntl_mean": 13.345098436433155,
+          "tile_id": "BRA_04_06"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 14175.646968815181,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.75,
+          "lon": -44.25,
+          "ntl_mean": 7.087823484407591,
+          "tile_id": "BRA_04_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 23239.874401191668,
+          "energy_class": "Energy poor",
+          "lat": -20.75,
+          "lon": -43.75,
+          "ntl_mean": 11.619937200595833,
+          "tile_id": "BRA_04_08"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 37906.48239986281,
+          "energy_class": "Electrified",
+          "lat": -20.75,
+          "lon": -43.25,
+          "ntl_mean": 18.953241199931405,
+          "tile_id": "BRA_04_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 17962.62981660742,
+          "energy_class": "Energy poor",
+          "lat": -20.25,
+          "lon": -47.75,
+          "ntl_mean": 8.981314908303709,
+          "tile_id": "BRA_05_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 32203.568015540142,
+          "energy_class": "Electrified",
+          "lat": -20.25,
+          "lon": -47.25,
+          "ntl_mean": 16.10178400777007,
+          "tile_id": "BRA_05_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 17590.49614361286,
+          "energy_class": "Energy poor",
+          "lat": -20.25,
+          "lon": -46.75,
+          "ntl_mean": 8.79524807180643,
+          "tile_id": "BRA_05_02"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 8969.797355535295,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.25,
+          "lon": -46.25,
+          "ntl_mean": 4.484898677767648,
+          "tile_id": "BRA_05_03"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 10275.013230719218,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.25,
+          "lon": -45.75,
+          "ntl_mean": 5.137506615359609,
+          "tile_id": "BRA_05_04"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 9109.494714987377,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.25,
+          "lon": -45.25,
+          "ntl_mean": 4.554747357493689,
+          "tile_id": "BRA_05_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 21731.33110148894,
+          "energy_class": "Energy poor",
+          "lat": -20.25,
+          "lon": -44.75,
+          "ntl_mean": 10.86566555074447,
+          "tile_id": "BRA_05_06"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 15210.384157516157,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.25,
+          "lon": -44.25,
+          "ntl_mean": 7.605192078758078,
+          "tile_id": "BRA_05_07"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 9358.993160319973,
+          "energy_class": "Low pop / unlit",
+          "lat": -20.25,
+          "lon": -43.75,
+          "ntl_mean": 4.679496580159986,
+          "tile_id": "BRA_05_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 18703.19332251348,
+          "energy_class": "Energy poor",
+          "lat": -20.25,
+          "lon": -43.25,
+          "ntl_mean": 9.35159666125674,
+          "tile_id": "BRA_05_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 31705.76581790498,
+          "energy_class": "Electrified",
+          "lat": -19.75,
+          "lon": -47.75,
+          "ntl_mean": 15.85288290895249,
+          "tile_id": "BRA_06_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 29232.948860618544,
+          "energy_class": "Energy poor",
+          "lat": -19.75,
+          "lon": -47.25,
+          "ntl_mean": 14.616474430309273,
+          "tile_id": "BRA_06_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 28863.47045487016,
+          "energy_class": "Energy poor",
+          "lat": -19.75,
+          "lon": -46.75,
+          "ntl_mean": 14.43173522743508,
+          "tile_id": "BRA_06_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 38755.73677375565,
+          "energy_class": "Electrified",
+          "lat": -19.75,
+          "lon": -46.25,
+          "ntl_mean": 19.377868386877825,
+          "tile_id": "BRA_06_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 29010.353947738957,
+          "energy_class": "Energy poor",
+          "lat": -19.75,
+          "lon": -45.75,
+          "ntl_mean": 14.505176973869478,
+          "tile_id": "BRA_06_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 31118.342320320502,
+          "energy_class": "Electrified",
+          "lat": -19.75,
+          "lon": -45.25,
+          "ntl_mean": 15.55917116016025,
+          "tile_id": "BRA_06_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 26054.458781566645,
+          "energy_class": "Energy poor",
+          "lat": -19.75,
+          "lon": -44.75,
+          "ntl_mean": 13.027229390783322,
+          "tile_id": "BRA_06_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 27657.783593071545,
+          "energy_class": "Energy poor",
+          "lat": -19.75,
+          "lon": -44.25,
+          "ntl_mean": 13.828891796535773,
+          "tile_id": "BRA_06_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 15365.086621625258,
+          "energy_class": "Energy poor",
+          "lat": -19.75,
+          "lon": -43.75,
+          "ntl_mean": 7.682543310812629,
+          "tile_id": "BRA_06_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 12744.799652491854,
+          "energy_class": "Low pop / unlit",
+          "lat": -19.75,
+          "lon": -43.25,
+          "ntl_mean": 6.372399826245927,
+          "tile_id": "BRA_06_09"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 36910.61100546679,
+          "energy_class": "Electrified",
+          "lat": -19.25,
+          "lon": -47.75,
+          "ntl_mean": 18.455305502733395,
+          "tile_id": "BRA_07_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 35349.662922883166,
+          "energy_class": "Electrified",
+          "lat": -19.25,
+          "lon": -47.25,
+          "ntl_mean": 17.674831461441585,
+          "tile_id": "BRA_07_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 22236.04216211341,
+          "energy_class": "Energy poor",
+          "lat": -19.25,
+          "lon": -46.75,
+          "ntl_mean": 11.118021081056703,
+          "tile_id": "BRA_07_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 25392.467984319006,
+          "energy_class": "Energy poor",
+          "lat": -19.25,
+          "lon": -46.25,
+          "ntl_mean": 12.696233992159502,
+          "tile_id": "BRA_07_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 23861.266472082123,
+          "energy_class": "Energy poor",
+          "lat": -19.25,
+          "lon": -45.75,
+          "ntl_mean": 11.93063323604106,
+          "tile_id": "BRA_07_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 25990.178693057147,
+          "energy_class": "Energy poor",
+          "lat": -19.25,
+          "lon": -45.25,
+          "ntl_mean": 12.995089346528573,
+          "tile_id": "BRA_07_05"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 37562.82710994995,
+          "energy_class": "Electrified",
+          "lat": -19.25,
+          "lon": -44.75,
+          "ntl_mean": 18.781413554974975,
+          "tile_id": "BRA_07_06"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 33532.88525795346,
+          "energy_class": "Electrified",
+          "lat": -19.25,
+          "lon": -44.25,
+          "ntl_mean": 16.76644262897673,
+          "tile_id": "BRA_07_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 17389.50427206351,
+          "energy_class": "Energy poor",
+          "lat": -19.25,
+          "lon": -43.75,
+          "ntl_mean": 8.694752136031756,
+          "tile_id": "BRA_07_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 17261.919956573125,
+          "energy_class": "Energy poor",
+          "lat": -19.25,
+          "lon": -43.25,
+          "ntl_mean": 8.630959978286562,
+          "tile_id": "BRA_07_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 25646.46937117386,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -47.75,
+          "ntl_mean": 12.823234685586929,
+          "tile_id": "BRA_08_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 30440.74140142168,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -47.25,
+          "ntl_mean": 15.220370700710841,
+          "tile_id": "BRA_08_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 39157.87948971379,
+          "energy_class": "Electrified",
+          "lat": -18.75,
+          "lon": -46.75,
+          "ntl_mean": 19.578939744856896,
+          "tile_id": "BRA_08_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 25686.744419580024,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -46.25,
+          "ntl_mean": 12.843372209790012,
+          "tile_id": "BRA_08_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 26865.22402224619,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -45.75,
+          "ntl_mean": 13.432612011123096,
+          "tile_id": "BRA_08_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 35600.185116176704,
+          "energy_class": "Electrified",
+          "lat": -18.75,
+          "lon": -45.25,
+          "ntl_mean": 17.800092558088352,
+          "tile_id": "BRA_08_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 26473.915346886293,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -44.75,
+          "ntl_mean": 13.236957673443147,
+          "tile_id": "BRA_08_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 29109.37968713064,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -44.25,
+          "ntl_mean": 14.55468984356532,
+          "tile_id": "BRA_08_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 23907.941297571597,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -43.75,
+          "ntl_mean": 11.953970648785798,
+          "tile_id": "BRA_08_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 20294.087857430037,
+          "energy_class": "Energy poor",
+          "lat": -18.75,
+          "lon": -43.25,
+          "ntl_mean": 10.147043928715018,
+          "tile_id": "BRA_08_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 29668.695572772805,
+          "energy_class": "Energy poor",
+          "lat": -18.25,
+          "lon": -47.75,
+          "ntl_mean": 14.834347786386402,
+          "tile_id": "BRA_09_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 38579.00751875743,
+          "energy_class": "Electrified",
+          "lat": -18.25,
+          "lon": -47.25,
+          "ntl_mean": 19.289503759378718,
+          "tile_id": "BRA_09_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 47915.800511500296,
+          "energy_class": "Electrified",
+          "lat": -18.25,
+          "lon": -46.75,
+          "ntl_mean": 23.957900255750147,
+          "tile_id": "BRA_09_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 32714.22177968581,
+          "energy_class": "Electrified",
+          "lat": -18.25,
+          "lon": -46.25,
+          "ntl_mean": 16.357110889842904,
+          "tile_id": "BRA_09_03"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 39767.39607125867,
+          "energy_class": "Electrified",
+          "lat": -18.25,
+          "lon": -45.75,
+          "ntl_mean": 19.883698035629337,
+          "tile_id": "BRA_09_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 34792.71356341234,
+          "energy_class": "Electrified",
+          "lat": -18.25,
+          "lon": -45.25,
+          "ntl_mean": 17.39635678170617,
+          "tile_id": "BRA_09_05"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 37166.81005309721,
+          "energy_class": "Electrified",
+          "lat": -18.25,
+          "lon": -44.75,
+          "ntl_mean": 18.583405026548604,
+          "tile_id": "BRA_09_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 24042.539968887988,
+          "energy_class": "Energy poor",
+          "lat": -18.25,
+          "lon": -44.25,
+          "ntl_mean": 12.021269984443993,
+          "tile_id": "BRA_09_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 19058.985984533443,
+          "energy_class": "Energy poor",
+          "lat": -18.25,
+          "lon": -43.75,
+          "ntl_mean": 9.529492992266722,
+          "tile_id": "BRA_09_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 21445.21479214022,
+          "energy_class": "Energy poor",
+          "lat": -18.25,
+          "lon": -43.25,
+          "ntl_mean": 10.72260739607011,
+          "tile_id": "BRA_09_09"
+        }
+      ],
+      "elevationScale": 1,
+      "extruded": true,
+      "getElevation": "@@=elevation",
+      "getFillColor": "@@=colour",
+      "getPosition": "@@=[lon, lat]",
+      "id": "b8070b7e-3c7d-47bb-94b3-881fb8d16312",
+      "pickable": true,
+      "radius": 30000
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "mapbox://styles/mapbox/dark-v10",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': '<b>{tile_id}</b><br>NTL: {ntl_mean:.1f}<br>Class: {energy_class}', 'style': {'backgroundColor': '#1a1a2e', 'color': 'white', 'fontSize': '12px'}};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>

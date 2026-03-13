@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.0.*/dist/index.js'></script>
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "bearing": -20,
+    "latitude": 31.0,
+    "longitude": 119.0,
+    "pitch": 45,
+    "zoom": 5
+  },
+  "layers": [
+    {
+      "@@type": "ColumnLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 18439.415246981112,
+          "energy_class": "Low pop / unlit",
+          "lat": 29.200000000000003,
+          "lon": 116.3,
+          "ntl_mean": 9.219707623490557,
+          "tile_id": "CHI_00_00"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 35519.11892282987,
+          "energy_class": "Low pop / unlit",
+          "lat": 29.2,
+          "lon": 116.89999999999999,
+          "ntl_mean": 17.759559461414934,
+          "tile_id": "CHI_00_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 47272.94307209052,
+          "energy_class": "Energy poor",
+          "lat": 29.200000000000003,
+          "lon": 117.5,
+          "ntl_mean": 23.63647153604526,
+          "tile_id": "CHI_00_02"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 39020.840921354655,
+          "energy_class": "Low pop / unlit",
+          "lat": 29.2,
+          "lon": 118.10000000000001,
+          "ntl_mean": 19.510420460677327,
+          "tile_id": "CHI_00_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 39208.48097336142,
+          "energy_class": "Energy poor",
+          "lat": 29.200000000000003,
+          "lon": 118.7,
+          "ntl_mean": 19.60424048668071,
+          "tile_id": "CHI_00_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 57412.88288339706,
+          "energy_class": "Energy poor",
+          "lat": 29.200000000000003,
+          "lon": 119.29999999999998,
+          "ntl_mean": 28.70644144169853,
+          "tile_id": "CHI_00_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 43368.334100844804,
+          "energy_class": "Energy poor",
+          "lat": 29.2,
+          "lon": 119.9,
+          "ntl_mean": 21.684167050422403,
+          "tile_id": "CHI_00_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 62723.73778048776,
+          "energy_class": "Energy poor",
+          "lat": 29.200000000000003,
+          "lon": 120.49999999999999,
+          "ntl_mean": 31.36186889024388,
+          "tile_id": "CHI_00_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 48254.91422919734,
+          "energy_class": "Energy poor",
+          "lat": 29.2,
+          "lon": 121.10000000000001,
+          "ntl_mean": 24.12745711459867,
+          "tile_id": "CHI_00_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 59785.45254685592,
+          "energy_class": "Energy poor",
+          "lat": 29.200000000000003,
+          "lon": 121.69999999999999,
+          "ntl_mean": 29.89272627342796,
+          "tile_id": "CHI_00_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 4911.523831636508,
+          "energy_class": "Low pop / unlit",
+          "lat": 29.6,
+          "lon": 116.3,
+          "ntl_mean": 2.455761915818254,
+          "tile_id": "CHI_01_00"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 30056.542352416578,
+          "energy_class": "Low pop / unlit",
+          "lat": 29.6,
+          "lon": 116.9,
+          "ntl_mean": 15.028271176208289,
+          "tile_id": "CHI_01_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 51967.21880541592,
+          "energy_class": "Energy poor",
+          "lat": 29.6,
+          "lon": 117.49999999999999,
+          "ntl_mean": 25.98360940270796,
+          "tile_id": "CHI_01_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 45627.9392896441,
+          "energy_class": "Energy poor",
+          "lat": 29.6,
+          "lon": 118.1,
+          "ntl_mean": 22.81396964482205,
+          "tile_id": "CHI_01_03"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 80824.10023349924,
+          "energy_class": "Electrified",
+          "lat": 29.6,
+          "lon": 118.69999999999997,
+          "ntl_mean": 40.41205011674962,
+          "tile_id": "CHI_01_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 73222.99869984572,
+          "energy_class": "Electrified",
+          "lat": 29.6,
+          "lon": 119.3,
+          "ntl_mean": 36.61149934992286,
+          "tile_id": "CHI_01_05"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 72142.60236379727,
+          "energy_class": "Electrified",
+          "lat": 29.6,
+          "lon": 119.9,
+          "ntl_mean": 36.07130118189863,
+          "tile_id": "CHI_01_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 43353.69118117261,
+          "energy_class": "Energy poor",
+          "lat": 29.6,
+          "lon": 120.5,
+          "ntl_mean": 21.676845590586304,
+          "tile_id": "CHI_01_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 43499.10500545475,
+          "energy_class": "Energy poor",
+          "lat": 29.6,
+          "lon": 121.1,
+          "ntl_mean": 21.749552502727376,
+          "tile_id": "CHI_01_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 53590.652870486585,
+          "energy_class": "Energy poor",
+          "lat": 29.6,
+          "lon": 121.69999999999999,
+          "ntl_mean": 26.795326435243293,
+          "tile_id": "CHI_01_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 3418.760010498026,
+          "energy_class": "Low pop / unlit",
+          "lat": 29.999999999999996,
+          "lon": 116.3,
+          "ntl_mean": 1.7093800052490131,
+          "tile_id": "CHI_02_00"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 36093.53440767515,
+          "energy_class": "Low pop / unlit",
+          "lat": 30.0,
+          "lon": 116.89999999999999,
+          "ntl_mean": 18.046767203837575,
+          "tile_id": "CHI_02_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 45869.584041689115,
+          "energy_class": "Energy poor",
+          "lat": 29.999999999999996,
+          "lon": 117.5,
+          "ntl_mean": 22.934792020844558,
+          "tile_id": "CHI_02_02"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 57175.8097315164,
+          "energy_class": "Energy poor",
+          "lat": 30.0,
+          "lon": 118.10000000000001,
+          "ntl_mean": 28.587904865758198,
+          "tile_id": "CHI_02_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 58877.37774669009,
+          "energy_class": "Energy poor",
+          "lat": 29.999999999999996,
+          "lon": 118.7,
+          "ntl_mean": 29.438688873345043,
+          "tile_id": "CHI_02_04"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 44665.65283120496,
+          "energy_class": "Energy poor",
+          "lat": 29.999999999999996,
+          "lon": 119.29999999999998,
+          "ntl_mean": 22.332826415602483,
+          "tile_id": "CHI_02_05"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 72542.02284770965,
+          "energy_class": "Electrified",
+          "lat": 30.0,
+          "lon": 119.9,
+          "ntl_mean": 36.27101142385483,
+          "tile_id": "CHI_02_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 47110.792772963316,
+          "energy_class": "Energy poor",
+          "lat": 29.999999999999996,
+          "lon": 120.49999999999999,
+          "ntl_mean": 23.555396386481657,
+          "tile_id": "CHI_02_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 42142.28711393438,
+          "energy_class": "Energy poor",
+          "lat": 30.0,
+          "lon": 121.10000000000001,
+          "ntl_mean": 21.07114355696719,
+          "tile_id": "CHI_02_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 57624.28135570632,
+          "energy_class": "Energy poor",
+          "lat": 29.999999999999996,
+          "lon": 121.69999999999999,
+          "ntl_mean": 28.81214067785316,
+          "tile_id": "CHI_02_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 6650.847211357565,
+          "energy_class": "Low pop / unlit",
+          "lat": 30.399999999999995,
+          "lon": 116.3,
+          "ntl_mean": 3.3254236056787825,
+          "tile_id": "CHI_03_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 53827.392166264224,
+          "energy_class": "Energy poor",
+          "lat": 30.4,
+          "lon": 116.9,
+          "ntl_mean": 26.913696083132113,
+          "tile_id": "CHI_03_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 60661.40282751505,
+          "energy_class": "Energy poor",
+          "lat": 30.399999999999995,
+          "lon": 117.49999999999999,
+          "ntl_mean": 30.330701413757524,
+          "tile_id": "CHI_03_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 74945.7027814449,
+          "energy_class": "Electrified",
+          "lat": 30.4,
+          "lon": 118.1,
+          "ntl_mean": 37.47285139072245,
+          "tile_id": "CHI_03_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 56269.69022784957,
+          "energy_class": "Energy poor",
+          "lat": 30.399999999999995,
+          "lon": 118.69999999999997,
+          "ntl_mean": 28.134845113924783,
+          "tile_id": "CHI_03_04"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 36355.82588361527,
+          "energy_class": "Low pop / unlit",
+          "lat": 30.399999999999995,
+          "lon": 119.3,
+          "ntl_mean": 18.177912941807634,
+          "tile_id": "CHI_03_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 45900.558211928175,
+          "energy_class": "Energy poor",
+          "lat": 30.4,
+          "lon": 119.9,
+          "ntl_mean": 22.95027910596409,
+          "tile_id": "CHI_03_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 64893.16289465491,
+          "energy_class": "Energy poor",
+          "lat": 30.399999999999995,
+          "lon": 120.5,
+          "ntl_mean": 32.44658144732745,
+          "tile_id": "CHI_03_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 46254.060975864864,
+          "energy_class": "Energy poor",
+          "lat": 30.4,
+          "lon": 121.1,
+          "ntl_mean": 23.127030487932434,
+          "tile_id": "CHI_03_08"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 48379.47252079645,
+          "energy_class": "Energy poor",
+          "lat": 30.399999999999995,
+          "lon": 121.69999999999999,
+          "ntl_mean": 24.189736260398227,
+          "tile_id": "CHI_03_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 15932.008086299,
+          "energy_class": "Low pop / unlit",
+          "lat": 30.799999999999997,
+          "lon": 116.3,
+          "ntl_mean": 7.9660040431495,
+          "tile_id": "CHI_04_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 52651.14382525458,
+          "energy_class": "Energy poor",
+          "lat": 30.8,
+          "lon": 116.89999999999999,
+          "ntl_mean": 26.32557191262729,
+          "tile_id": "CHI_04_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 47974.16532353997,
+          "energy_class": "Energy poor",
+          "lat": 30.799999999999997,
+          "lon": 117.5,
+          "ntl_mean": 23.987082661769985,
+          "tile_id": "CHI_04_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 67204.32443925852,
+          "energy_class": "Electrified",
+          "lat": 30.8,
+          "lon": 118.10000000000001,
+          "ntl_mean": 33.60216221962926,
+          "tile_id": "CHI_04_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 65673.82087227561,
+          "energy_class": "Energy poor",
+          "lat": 30.799999999999997,
+          "lon": 118.7,
+          "ntl_mean": 32.836910436137806,
+          "tile_id": "CHI_04_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 72627.29732777047,
+          "energy_class": "Electrified",
+          "lat": 30.799999999999997,
+          "lon": 119.29999999999998,
+          "ntl_mean": 36.31364866388524,
+          "tile_id": "CHI_04_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 57012.01815965803,
+          "energy_class": "Energy poor",
+          "lat": 30.8,
+          "lon": 119.9,
+          "ntl_mean": 28.506009079829013,
+          "tile_id": "CHI_04_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 59901.06872646006,
+          "energy_class": "Energy poor",
+          "lat": 30.799999999999997,
+          "lon": 120.49999999999999,
+          "ntl_mean": 29.950534363230027,
+          "tile_id": "CHI_04_07"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 25323.024239039092,
+          "energy_class": "Low pop / unlit",
+          "lat": 30.8,
+          "lon": 121.10000000000001,
+          "ntl_mean": 12.661512119519546,
+          "tile_id": "CHI_04_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 24992.46070083929,
+          "energy_class": "Low pop / unlit",
+          "lat": 30.799999999999997,
+          "lon": 121.69999999999999,
+          "ntl_mean": 12.496230350419644,
+          "tile_id": "CHI_04_09"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 33733.83399209696,
+          "energy_class": "Low pop / unlit",
+          "lat": 31.2,
+          "lon": 116.3,
+          "ntl_mean": 16.86691699604848,
+          "tile_id": "CHI_05_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 76924.3973741331,
+          "energy_class": "Electrified",
+          "lat": 31.200000000000003,
+          "lon": 116.89999999999999,
+          "ntl_mean": 38.46219868706655,
+          "tile_id": "CHI_05_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 61188.775666564645,
+          "energy_class": "Energy poor",
+          "lat": 31.2,
+          "lon": 117.5,
+          "ntl_mean": 30.594387833282322,
+          "tile_id": "CHI_05_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 75389.49252339924,
+          "energy_class": "Electrified",
+          "lat": 31.200000000000003,
+          "lon": 118.10000000000001,
+          "ntl_mean": 37.69474626169962,
+          "tile_id": "CHI_05_03"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 84804.46403540511,
+          "energy_class": "Electrified",
+          "lat": 31.2,
+          "lon": 118.7,
+          "ntl_mean": 42.40223201770255,
+          "tile_id": "CHI_05_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 79666.66596299046,
+          "energy_class": "Electrified",
+          "lat": 31.2,
+          "lon": 119.29999999999998,
+          "ntl_mean": 39.83333298149523,
+          "tile_id": "CHI_05_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 44932.082724358275,
+          "energy_class": "Energy poor",
+          "lat": 31.200000000000003,
+          "lon": 119.9,
+          "ntl_mean": 22.466041362179137,
+          "tile_id": "CHI_05_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 53259.89587491344,
+          "energy_class": "Energy poor",
+          "lat": 31.2,
+          "lon": 120.49999999999999,
+          "ntl_mean": 26.62994793745672,
+          "tile_id": "CHI_05_07"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 39117.22005843691,
+          "energy_class": "Energy poor",
+          "lat": 31.200000000000003,
+          "lon": 121.10000000000001,
+          "ntl_mean": 19.558610029218457,
+          "tile_id": "CHI_05_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 34056.17455102372,
+          "energy_class": "Low pop / unlit",
+          "lat": 31.2,
+          "lon": 121.69999999999999,
+          "ntl_mean": 17.02808727551186,
+          "tile_id": "CHI_05_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 56276.05324111725,
+          "energy_class": "Energy poor",
+          "lat": 31.599999999999998,
+          "lon": 116.3,
+          "ntl_mean": 28.138026620558627,
+          "tile_id": "CHI_06_00"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 65788.67271715704,
+          "energy_class": "Electrified",
+          "lat": 31.6,
+          "lon": 116.9,
+          "ntl_mean": 32.89433635857852,
+          "tile_id": "CHI_06_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 52321.94341696033,
+          "energy_class": "Energy poor",
+          "lat": 31.599999999999998,
+          "lon": 117.49999999999999,
+          "ntl_mean": 26.16097170848016,
+          "tile_id": "CHI_06_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 86810.72990122001,
+          "energy_class": "Electrified",
+          "lat": 31.6,
+          "lon": 118.1,
+          "ntl_mean": 43.40536495061001,
+          "tile_id": "CHI_06_03"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 89632.9125597284,
+          "energy_class": "Electrified",
+          "lat": 31.599999999999998,
+          "lon": 118.69999999999997,
+          "ntl_mean": 44.8164562798642,
+          "tile_id": "CHI_06_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 91057.3323959776,
+          "energy_class": "Electrified",
+          "lat": 31.599999999999998,
+          "lon": 119.3,
+          "ntl_mean": 45.5286661979888,
+          "tile_id": "CHI_06_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 46397.97713045996,
+          "energy_class": "Energy poor",
+          "lat": 31.6,
+          "lon": 119.9,
+          "ntl_mean": 23.198988565229982,
+          "tile_id": "CHI_06_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 47119.245027471785,
+          "energy_class": "Energy poor",
+          "lat": 31.599999999999998,
+          "lon": 120.5,
+          "ntl_mean": 23.559622513735892,
+          "tile_id": "CHI_06_07"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 7054.950112219963,
+          "energy_class": "Low pop / unlit",
+          "lat": 31.6,
+          "lon": 121.1,
+          "ntl_mean": 3.5274750561099815,
+          "tile_id": "CHI_06_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 17219.54318292275,
+          "energy_class": "Low pop / unlit",
+          "lat": 31.599999999999998,
+          "lon": 121.69999999999999,
+          "ntl_mean": 8.609771591461374,
+          "tile_id": "CHI_06_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 48932.550469269656,
+          "energy_class": "Energy poor",
+          "lat": 32.0,
+          "lon": 116.3,
+          "ntl_mean": 24.46627523463483,
+          "tile_id": "CHI_07_00"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 26239.101253544788,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.0,
+          "lon": 116.9,
+          "ntl_mean": 13.119550626772394,
+          "tile_id": "CHI_07_01"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 60559.62020906733,
+          "energy_class": "Energy poor",
+          "lat": 32.0,
+          "lon": 117.49999999999999,
+          "ntl_mean": 30.279810104533667,
+          "tile_id": "CHI_07_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 97943.83622996013,
+          "energy_class": "Electrified",
+          "lat": 32.0,
+          "lon": 118.1,
+          "ntl_mean": 48.97191811498006,
+          "tile_id": "CHI_07_03"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 104765.2756629621,
+          "energy_class": "Electrified",
+          "lat": 32.0,
+          "lon": 118.69999999999997,
+          "ntl_mean": 52.38263783148105,
+          "tile_id": "CHI_07_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 84262.09990183281,
+          "energy_class": "Electrified",
+          "lat": 32.0,
+          "lon": 119.3,
+          "ntl_mean": 42.131049950916406,
+          "tile_id": "CHI_07_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 62822.335921395534,
+          "energy_class": "Energy poor",
+          "lat": 32.0,
+          "lon": 119.9,
+          "ntl_mean": 31.411167960697767,
+          "tile_id": "CHI_07_06"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 46007.78692131918,
+          "energy_class": "Energy poor",
+          "lat": 32.0,
+          "lon": 120.5,
+          "ntl_mean": 23.00389346065959,
+          "tile_id": "CHI_07_07"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.0,
+          "lon": 121.1,
+          "ntl_mean": 0.0,
+          "tile_id": "CHI_07_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 19546.76672551954,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.0,
+          "lon": 121.69999999999999,
+          "ntl_mean": 9.77338336275977,
+          "tile_id": "CHI_07_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 43200.61237391504,
+          "energy_class": "Energy poor",
+          "lat": 32.400000000000006,
+          "lon": 116.3,
+          "ntl_mean": 21.60030618695752,
+          "tile_id": "CHI_08_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 47941.932146544445,
+          "energy_class": "Energy poor",
+          "lat": 32.400000000000006,
+          "lon": 116.89999999999999,
+          "ntl_mean": 23.970966073272223,
+          "tile_id": "CHI_08_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 89037.51474587787,
+          "energy_class": "Electrified",
+          "lat": 32.400000000000006,
+          "lon": 117.5,
+          "ntl_mean": 44.518757372938936,
+          "tile_id": "CHI_08_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 116802.8859138608,
+          "energy_class": "Electrified",
+          "lat": 32.400000000000006,
+          "lon": 118.10000000000001,
+          "ntl_mean": 58.401442956930396,
+          "tile_id": "CHI_08_03"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 80835.38580339549,
+          "energy_class": "Electrified",
+          "lat": 32.400000000000006,
+          "lon": 118.7,
+          "ntl_mean": 40.41769290169775,
+          "tile_id": "CHI_08_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 75985.61420099893,
+          "energy_class": "Electrified",
+          "lat": 32.400000000000006,
+          "lon": 119.29999999999998,
+          "ntl_mean": 37.99280710049946,
+          "tile_id": "CHI_08_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 53529.12545996101,
+          "energy_class": "Energy poor",
+          "lat": 32.400000000000006,
+          "lon": 119.9,
+          "ntl_mean": 26.764562729980504,
+          "tile_id": "CHI_08_06"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 19079.58245800547,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.400000000000006,
+          "lon": 120.49999999999999,
+          "ntl_mean": 9.539791229002734,
+          "tile_id": "CHI_08_07"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 0.0,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.400000000000006,
+          "lon": 121.10000000000001,
+          "ntl_mean": 0.0,
+          "tile_id": "CHI_08_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 4881.478426926087,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.400000000000006,
+          "lon": 121.69999999999999,
+          "ntl_mean": 2.4407392134630435,
+          "tile_id": "CHI_08_09"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 53801.70355866598,
+          "energy_class": "Energy poor",
+          "lat": 32.8,
+          "lon": 116.3,
+          "ntl_mean": 26.90085177933299,
+          "tile_id": "CHI_09_00"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 56037.49781532233,
+          "energy_class": "Energy poor",
+          "lat": 32.8,
+          "lon": 116.89999999999999,
+          "ntl_mean": 28.018748907661163,
+          "tile_id": "CHI_09_01"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 81478.93814647647,
+          "energy_class": "Electrified",
+          "lat": 32.8,
+          "lon": 117.5,
+          "ntl_mean": 40.73946907323824,
+          "tile_id": "CHI_09_02"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 78195.72861496326,
+          "energy_class": "Electrified",
+          "lat": 32.8,
+          "lon": 118.10000000000001,
+          "ntl_mean": 39.09786430748163,
+          "tile_id": "CHI_09_03"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 61378.320178247915,
+          "energy_class": "Energy poor",
+          "lat": 32.8,
+          "lon": 118.7,
+          "ntl_mean": 30.68916008912396,
+          "tile_id": "CHI_09_04"
+        },
+        {
+          "colour": [
+            26,
+            120,
+            194,
+            220
+          ],
+          "elevation": 68869.4298243704,
+          "energy_class": "Electrified",
+          "lat": 32.8,
+          "lon": 119.29999999999998,
+          "ntl_mean": 34.4347149121852,
+          "tile_id": "CHI_09_05"
+        },
+        {
+          "colour": [
+            214,
+            39,
+            40,
+            220
+          ],
+          "elevation": 58592.748029818475,
+          "energy_class": "Energy poor",
+          "lat": 32.8,
+          "lon": 119.9,
+          "ntl_mean": 29.296374014909237,
+          "tile_id": "CHI_09_06"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 24244.02714965212,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.8,
+          "lon": 120.49999999999999,
+          "ntl_mean": 12.12201357482606,
+          "tile_id": "CHI_09_07"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 14118.927557270701,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.8,
+          "lon": 121.10000000000001,
+          "ntl_mean": 7.059463778635351,
+          "tile_id": "CHI_09_08"
+        },
+        {
+          "colour": [
+            245,
+            197,
+            24,
+            220
+          ],
+          "elevation": 14927.05362239247,
+          "energy_class": "Low pop / unlit",
+          "lat": 32.8,
+          "lon": 121.69999999999999,
+          "ntl_mean": 7.463526811196235,
+          "tile_id": "CHI_09_09"
+        }
+      ],
+      "elevationScale": 1,
+      "extruded": true,
+      "getElevation": "@@=elevation",
+      "getFillColor": "@@=colour",
+      "getPosition": "@@=[lon, lat]",
+      "id": "b2ec53af-bf59-4aaf-975f-1c79b5f62c32",
+      "pickable": true,
+      "radius": 30000
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "mapbox://styles/mapbox/dark-v10",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'html': '<b>{tile_id}</b><br>NTL: {ntl_mean:.1f}<br>Class: {energy_class}', 'style': {'backgroundColor': '#1a1a2e', 'color': 'white', 'fontSize': '12px'}};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration
+    });
+
+  </script>
+</html>
