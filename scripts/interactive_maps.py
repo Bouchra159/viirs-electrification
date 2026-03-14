@@ -156,7 +156,7 @@ def save_map(m: folium.Map, path: str | Path) -> None:
 
 def ntl_map(gdf: gpd.GeoDataFrame, country: str) -> folium.Map:
     m = _base_map(gdf)
-    layer = choropleth_layer(gdf, 'ntl_mean', f'NTL — {country}', cmap_name='plasma')
+    layer = choropleth_layer(gdf, 'ntl_mean', f'NTL — {country}', cmap_name='magma')
     layer.add_to(m)
     _fit_bounds(m, gdf)
     return m
@@ -184,13 +184,14 @@ def energy_map(gdf: gpd.GeoDataFrame, country: str) -> folium.Map:
 # Combined multi-country map
 # ---------------------------------------------------------------------------
 
-def build_combined_map(gdfs: dict[str, gpd.GeoDataFrame]) -> folium.Map:
+def build_combined_map(gdfs: dict[str, gpd.GeoDataFrame], year: int = 2020) -> folium.Map:
     """
     Build one folium Map with LayerControl showing all countries and all themes.
 
     Parameters
     ----------
     gdfs : dict mapping country name → GeoDataFrame with cluster_label and energy_class columns.
+    year : reference year label shown in layer names (default 2020).
 
     Returns
     -------
@@ -200,9 +201,9 @@ def build_combined_map(gdfs: dict[str, gpd.GeoDataFrame]) -> folium.Map:
     m = folium.Map(location=[20, 10], zoom_start=2, tiles='CartoDB positron')
 
     for country, gdf in gdfs.items():
-        choropleth_layer(gdf, 'ntl_mean', f'NTL — {country}', cmap_name='plasma').add_to(m)
-        lisa_layer(gdf, f'LISA — {country}').add_to(m)
-        energy_poverty_layer(gdf, f'Energy Poverty — {country}').add_to(m)
+        choropleth_layer(gdf, 'ntl_mean', f'NTL — {country} ({year})', cmap_name='magma').add_to(m)
+        lisa_layer(gdf, f'LISA — {country} ({year})').add_to(m)
+        energy_poverty_layer(gdf, f'Energy Poverty — {country} ({year})').add_to(m)
 
     LayerControl(collapsed=False).add_to(m)
     _add_legend_html(m, {**LISA_COLOURS, **ENERGY_COLOURS}, 'Legend')
