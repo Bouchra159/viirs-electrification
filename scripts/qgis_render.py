@@ -3,27 +3,46 @@ qgis_render.py
 --------------
 Headless PyQGIS renderer for the VIIRS Electrification Analysis project.
 
-Generates publication-quality maps (300 DPI PNG + PDF) from GeoPackage
-layers exported by scripts/export_qgis_layers.py.
+Produces a complete, journal-ready figure suite (300 DPI PNG + PDF) following
+cartographic conventions for Remote Sensing / GIS research publications.
 
-Layer stack (bottom to top):
-  1. CartoDB Positron XYZ basemap     — clean light background
-  2. World country boundaries          — from QGIS built-in world_map.gpkg
-  3. Analysis layer (80 % opacity)    — LISA / energy poverty / NTL trend tiles
+Layer stack on every map (bottom → top):
+  1. CartoDB Positron XYZ basemap  — clean light reference background
+  2. World country boundaries       — QGIS built-in world_map.gpkg, thin outline
+  3. Analysis layer (80 % opacity) — graduated or categorized symbology
 
-Maps produced
--------------
-Individual A4-landscape maps (9 total — one per country × map type):
-    figures/qgis_maps/lisa_brazil.{png,pdf}
-    figures/qgis_maps/lisa_china.{png,pdf}
-    figures/qgis_maps/lisa_morocco.{png,pdf}
-    figures/qgis_maps/energy_{country}.{png,pdf}
-    figures/qgis_maps/trend_{country}.{png,pdf}
+Maps produced (29 files × 2 formats = 58 outputs in figures/qgis_maps/)
+------------------------------------------------------------------------
+Study area:
+    00_study_area.{png,pdf}           — 3 regions on world overview map
 
-Multi-country panel maps (3 total — A3 landscape):
-    figures/qgis_maps/panel_lisa.{png,pdf}
-    figures/qgis_maps/panel_energy.{png,pdf}
-    figures/qgis_maps/panel_trend.{png,pdf}
+NTL radiance choropleth (Magma, 7-class quantile):
+    ntl_{country}.{png,pdf}           × 3
+    panel_ntl.{png,pdf}
+
+LISA spatial autocorrelation (categorized):
+    lisa_{country}.{png,pdf}          × 3
+    panel_lisa.{png,pdf}
+
+Energy poverty classification (categorized):
+    energy_{country}.{png,pdf}        × 3
+    panel_energy.{png,pdf}
+
+NTL trend direction 2014–2023 (categorized):
+    trend_{country}.{png,pdf}         × 3
+    panel_trend.{png,pdf}
+
+SHAP — infrastructure density effect (RdBu diverging, 7-class):
+    shap_infra_{country}.{png,pdf}    × 3
+    panel_shap_infra.{png,pdf}
+
+GWR local coefficient — infrastructure density (RdBu diverging, 7-class):
+    gwr_infra_{country}.{png,pdf}     × 3
+    panel_gwr_infra.{png,pdf}
+
+GWR local R² — goodness of fit (YlOrRd sequential, 7-class):
+    gwr_r2_{country}.{png,pdf}        × 3
+    panel_gwr_r2.{png,pdf}
 
 Usage
 -----
@@ -40,7 +59,7 @@ from __future__ import annotations
 import os
 import sys
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 # ── OSGeo4W / QGIS environment ────────────────────────────────────────────────
 _QGIS_ROOT = Path(r'C:\Program Files\QGIS 3.40.11')
@@ -75,6 +94,10 @@ from qgis.core import (                                                    # noq
     QgsSingleSymbolRenderer,
     QgsRendererCategory,
     QgsCategorizedSymbolRenderer,
+    QgsGraduatedSymbolRenderer,
+    QgsClassificationQuantile,
+    QgsClassificationJenks,
+    QgsStyle,
     QgsPrintLayout,
     QgsLayoutSize,
     QgsUnitTypes,
@@ -94,10 +117,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR     = PROJECT_ROOT / 'data' / 'processed'
 FIGURES_DIR  = PROJECT_ROOT / 'figures' / 'qgis_maps'
 
-# QGIS built-in world boundaries (ships with every QGIS installation)
 _WORLD_GPKG = _QGIS_ROOT / 'apps' / 'qgis-ltr' / 'resources' / 'data' / 'world_map.gpkg'
 
-# CartoDB Positron — clean light basemap, standard for research cartography
 _BASEMAP_URI = (
     'type=xyz'
     '&url=https://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
@@ -105,72 +126,124 @@ _BASEMAP_URI = (
     '&crs=EPSG3857'
 )
 
-# ── Cartographic colour palettes ──────────────────────────────────────────────
-# Consistent with interactive_maps.py and qgis_workflow.md.
-
+# ── Colour palettes — categorized maps ────────────────────────────────────────
 LISA_COLOURS: Dict[str, str] = {
-    'High-High':       '#d7191c',   # electrification hotspot
-    'Low-Low':         '#2c7bb6',   # electrification coldspot
-    'High-Low':        '#fdae61',   # isolated bright tile (outlier)
-    'Low-High':        '#abd9e9',   # isolated dark tile (outlier)
-    'Not significant': '#eeeeee',   # no significant spatial clustering
+    'High-High':       '#d7191c',
+    'Low-Low':         '#2c7bb6',
+    'High-Low':        '#fdae61',
+    'Low-High':        '#abd9e9',
+    'Not significant': '#eeeeee',
 }
-
 ENERGY_COLOURS: Dict[str, str] = {
     'Electrified':     '#1a78c2',
     'Energy poor':     '#d62728',
     'Low pop / unlit': '#f5c518',
 }
-
 TREND_COLOURS: Dict[str, str] = {
-    'Increasing':  '#1a9641',   # NTL rising 2014–2023
-    'Stable':      '#ffffbf',   # no significant trend
-    'Decreasing':  '#d7191c',   # NTL declining
+    'Increasing':  '#1a9641',
+    'Stable':      '#ffffbf',
+    'Decreasing':  '#d7191c',
 }
 
 # ── Country spatial extents (EPSG:4326) ───────────────────────────────────────
-# Morocco extent covers Western Sahara (south to 20.8°N).
 COUNTRY_EXTENTS: Dict[str, QgsRectangle] = {
     'brazil':  QgsRectangle(-48.0, -23.0, -43.0, -18.0),
     'china':   QgsRectangle(116.0,  29.0, 122.0,  33.0),
     'morocco': QgsRectangle(-17.1,  20.8,  -1.0,  35.9),
 }
-
 COUNTRY_LABELS: Dict[str, str] = {
     'brazil':  'Brazil',
     'china':   'China',
     'morocco': 'Morocco (incl. Western Sahara)',
 }
-
 COUNTRIES = ['brazil', 'china', 'morocco']
 
+# World overview extent for study area map
+_WORLD_EXTENT = QgsRectangle(-180, -60, 180, 80)
+
+# ── Map type configuration ─────────────────────────────────────────────────────
+# renderer: 'categorized' | 'graduated_seq' | 'graduated_div'
 MAP_CONFIGS: Dict[str, Dict] = {
+    'ntl': {
+        'gpkg_tmpl':    'ntl_choropleth_{country}.gpkg',
+        'layer_name':   'ntl_choropleth',
+        'renderer':     'graduated_seq',
+        'field':        'ntl_mean',
+        'color_ramp':   'Magma',
+        'n_classes':    7,
+        'title_tmpl':   'VIIRS NTL Radiance — {label}',
+        'panel_title':  'VIIRS Nighttime Light Radiance (annual composite)',
+        'legend_title': 'NTL (nW/cm²/sr)',
+        'legend_cols':  1,
+    },
     'lisa': {
         'gpkg_tmpl':    'lisa_clusters_{country}.gpkg',
         'layer_name':   'lisa_clusters',
-        'style_field':  'cluster_type',
+        'renderer':     'categorized',
+        'field':        'cluster_type',
         'colours':      LISA_COLOURS,
         'title_tmpl':   'LISA Autocorrelation Clusters — {label}',
         'panel_title':  'LISA Spatial Autocorrelation Clusters · VIIRS NTL Radiance',
+        'legend_title': 'LISA Cluster',
         'legend_cols':  3,
     },
     'energy': {
         'gpkg_tmpl':    'energy_poverty_{country}.gpkg',
         'layer_name':   'energy_poverty',
-        'style_field':  'energy_class',
+        'renderer':     'categorized',
+        'field':        'energy_class',
         'colours':      ENERGY_COLOURS,
         'title_tmpl':   'Energy Poverty Classification — {label}',
         'panel_title':  'Energy Poverty Classification · VIIRS NTL Radiance',
+        'legend_title': 'Energy Class',
         'legend_cols':  3,
     },
     'trend': {
         'gpkg_tmpl':    'ntl_trend_{country}.gpkg',
         'layer_name':   'ntl_trend',
-        'style_field':  'trend_dir',
+        'renderer':     'categorized',
+        'field':        'trend_dir',
         'colours':      TREND_COLOURS,
-        'title_tmpl':   'NTL Radiance Trend Direction 2014–2023 — {label}',
-        'panel_title':  'NTL Radiance Trend Direction 2014–2023 · VIIRS',
+        'title_tmpl':   'NTL Trend Direction 2014–2023 — {label}',
+        'panel_title':  'NTL Radiance Trend Direction 2014–2023 (Theil-Sen slope)',
+        'legend_title': 'Trend',
         'legend_cols':  3,
+    },
+    'shap_infra': {
+        'gpkg_tmpl':    'shap_values_{country}.gpkg',
+        'layer_name':   'shap_values',
+        'renderer':     'graduated_div',
+        'field':        'shap_infra_density',
+        'color_ramp':   'RdBu',
+        'n_classes':    7,
+        'title_tmpl':   'SHAP Effect: Infrastructure Density — {label}',
+        'panel_title':  'SHAP Feature Effect: Infrastructure Density (XGBoost)',
+        'legend_title': 'SHAP value',
+        'legend_cols':  1,
+    },
+    'gwr_infra': {
+        'gpkg_tmpl':    'gwr_coefficients_{country}.gpkg',
+        'layer_name':   'gwr_coefficients',
+        'renderer':     'graduated_div',
+        'field':        'gwr_infra_density',
+        'color_ramp':   'RdBu',
+        'n_classes':    7,
+        'title_tmpl':   'GWR Coefficient: Infrastructure Density — {label}',
+        'panel_title':  'GWR Local Coefficient: Infrastructure Density Effect on NTL',
+        'legend_title': 'Local β',
+        'legend_cols':  1,
+    },
+    'gwr_r2': {
+        'gpkg_tmpl':    'gwr_coefficients_{country}.gpkg',
+        'layer_name':   'gwr_coefficients',
+        'renderer':     'graduated_seq',
+        'field':        'gwr_local_r2',
+        'color_ramp':   'YlOrRd',
+        'n_classes':    5,
+        'title_tmpl':   'GWR Local R² — {label}',
+        'panel_title':  'GWR Goodness of Fit (Local R²) — Spatial Model Performance',
+        'legend_title': 'Local R²',
+        'legend_cols':  1,
     },
 }
 
@@ -193,7 +266,6 @@ def init_qgis() -> QgsApplication:
 
 
 def exit_qgis() -> None:
-    """Shut down QgsApplication cleanly."""
     if _qgs_app is not None:
         _qgs_app.exitQgis()
 
@@ -201,71 +273,49 @@ def exit_qgis() -> None:
 # ── Background layer builders ─────────────────────────────────────────────────
 
 def make_basemap_layer() -> Optional[QgsRasterLayer]:
-    """
-    Load CartoDB Positron as an XYZ tile raster layer.
-
-    Returns None if the layer cannot be loaded (e.g. no internet), in which
-    case the map renders without a basemap rather than crashing.
-    """
+    """Load CartoDB Positron as an XYZ tile raster layer."""
     layer = QgsRasterLayer(_BASEMAP_URI, 'CartoDB Positron', 'wms')
     if not layer.isValid():
-        print('  WARNING: basemap not available — rendering without background.')
+        print('  WARNING: basemap unavailable — rendering without background.')
         return None
     return layer
 
 
 def make_boundaries_layer() -> Optional[QgsVectorLayer]:
     """
-    Load world country outlines from QGIS's built-in world_map.gpkg.
-
-    Styled as thin dark-grey lines with no fill — provides geographic
-    context without competing with the analysis layer colours.
+    Load world country outlines from QGIS built-in world_map.gpkg.
+    Styled as thin dark grey lines (no fill) for geographic context.
     """
     if not _WORLD_GPKG.exists():
-        print(f'  WARNING: world_map.gpkg not found at {_WORLD_GPKG}')
         return None
-
-    layer = QgsVectorLayer(
-        f'{_WORLD_GPKG}|layername=countries',
-        'Country boundaries', 'ogr',
-    )
-    # Fallback: some QGIS builds use a different layer name inside the GPKG
+    layer = QgsVectorLayer(f'{_WORLD_GPKG}|layername=countries',
+                           'Country boundaries', 'ogr')
     if not layer.isValid():
         layer = QgsVectorLayer(str(_WORLD_GPKG), 'Country boundaries', 'ogr')
     if not layer.isValid():
-        print('  WARNING: could not load world boundaries layer.')
         return None
-
-    # Transparent fill, thin dark outline — standard reference overlay
-    symbol = QgsLineSymbol.createSimple({
-        'color':        '#444444',
-        'width':        '0.4',
-        'penstyle':     'solid',
-    })
+    symbol = QgsLineSymbol.createSimple({'color': '#444444', 'width': '0.4'})
     layer.setRenderer(QgsSingleSymbolRenderer(symbol))
     layer.setOpacity(0.7)
     return layer
 
 
-# ── Analysis layer builder ────────────────────────────────────────────────────
+# ── Renderer builders ─────────────────────────────────────────────────────────
 
 def make_categorized_renderer(
     field: str,
     colour_map: Dict[str, str],
 ) -> QgsCategorizedSymbolRenderer:
     """
-    Build a categorized renderer from a {value → hex_colour} mapping.
-
-    Symbols use semi-transparent fills (alpha 200/255) so the basemap
-    roads and labels remain faintly visible beneath the analysis tiles.
-    White 0.3 pt outlines cleanly separate adjacent polygons.
+    Categorized renderer from a {value → hex} palette.
+    Fills at 80% opacity; white 0.3pt outlines separate adjacent polygons.
     """
     categories = []
     for value, hex_col in colour_map.items():
-        color = QColor(hex_col)
-        color.setAlpha(200)                  # ~78% opacity — basemap shows through
+        c = QColor(hex_col)
+        c.setAlpha(204)                      # 80 % opacity
         symbol = QgsFillSymbol.createSimple({
-            'color':         color.name(QColor.HexArgb),
+            'color':         c.name(QColor.HexArgb),
             'outline_color': '#ffffff',
             'outline_width': '0.3',
         })
@@ -273,34 +323,89 @@ def make_categorized_renderer(
     return QgsCategorizedSymbolRenderer(field, categories)
 
 
+def make_graduated_renderer(
+    layer: QgsVectorLayer,
+    field: str,
+    color_ramp_name: str,
+    n_classes: int = 7,
+    diverging: bool = False,
+) -> QgsGraduatedSymbolRenderer:
+    """
+    Quantile-classified graduated renderer using a named QGIS colour ramp.
+
+    For diverging ramps (SHAP, GWR coefficients) Jenks natural breaks are
+    used instead of quantiles to better capture the zero-crossing structure.
+    Uses 80% opacity fills consistent with all other layers.
+    """
+    style = QgsStyle.defaultStyle()
+    ramp  = style.colorRamp(color_ramp_name)
+
+    if ramp is None:
+        # Fallback: 'Reds' always ships with QGIS
+        ramp = style.colorRamp('Reds')
+
+    renderer = QgsGraduatedSymbolRenderer(field)
+
+    if diverging:
+        renderer.setClassificationMethod(QgsClassificationJenks())
+    else:
+        renderer.setClassificationMethod(QgsClassificationQuantile())
+
+    renderer.updateClasses(layer, n_classes)
+    renderer.updateColorRamp(ramp)
+
+    # Apply 80% opacity and white outline to every generated symbol
+    for range_item in renderer.ranges():
+        sym = range_item.symbol().clone()
+        for i in range(sym.symbolLayerCount()):
+            sl = sym.symbolLayer(i)
+            c = sl.fillColor()
+            c.setAlpha(204)
+            sl.setFillColor(c)
+            sl.setStrokeColor(QColor('#ffffff'))
+            sl.setStrokeWidth(0.3)
+        range_item.setSymbol(sym)
+
+    return renderer
+
+
 def load_styled_layer(
     gpkg: Path,
     layer_name: str,
     display_name: str,
-    field: str,
-    colour_map: Dict[str, str],
+    cfg: Dict,
 ) -> QgsVectorLayer:
     """
-    Load a vector layer from a GeoPackage file and apply categorized styling.
+    Load a GeoPackage vector layer and apply the renderer described by *cfg*.
 
     Raises
     ------
-    FileNotFoundError
-        If the GeoPackage file does not exist on disk.
-    RuntimeError
-        If QGIS cannot load the specified layer.
+    FileNotFoundError / RuntimeError on load failure.
     """
     if not gpkg.exists():
         raise FileNotFoundError(
             f'GeoPackage not found: {gpkg}\n'
-            '  → Run scripts/export_qgis_layers.py to generate processed data.'
+            '  → Run scripts/export_qgis_layers.py first.'
         )
     layer = QgsVectorLayer(f'{gpkg}|layername={layer_name}', display_name, 'ogr')
     if not layer.isValid():
-        raise RuntimeError(
-            f'Could not load layer "{layer_name}" from {gpkg.name}.'
+        raise RuntimeError(f'Cannot load "{layer_name}" from {gpkg.name}.')
+
+    rtype = cfg.get('renderer', 'categorized')
+    if rtype == 'categorized':
+        renderer = make_categorized_renderer(cfg['field'], cfg['colours'])
+    elif rtype == 'graduated_div':
+        renderer = make_graduated_renderer(
+            layer, cfg['field'], cfg['color_ramp'],
+            cfg.get('n_classes', 7), diverging=True,
         )
-    layer.setRenderer(make_categorized_renderer(field, colour_map))
+    else:  # graduated_seq
+        renderer = make_graduated_renderer(
+            layer, cfg['field'], cfg['color_ramp'],
+            cfg.get('n_classes', 7), diverging=False,
+        )
+
+    layer.setRenderer(renderer)
     return layer
 
 
@@ -322,14 +427,11 @@ def _find_north_arrow_svg() -> Optional[str]:
     return None
 
 
-# ── Layout item factories ─────────────────────────────────────────────────────
-
 def _add_label(
     layout: QgsPrintLayout,
     text: str,
     x: float, y: float, w: float, h: float,
-    font_size: int = 9,
-    bold: bool = False,
+    font_size: int = 9, bold: bool = False,
     align: Qt.AlignmentFlag = Qt.AlignLeft,
 ) -> QgsLayoutItemLabel:
     item = QgsLayoutItemLabel(layout)
@@ -349,11 +451,8 @@ def _add_label(
     return item
 
 
-def _add_north_arrow(
-    layout: QgsPrintLayout,
-    x: float, y: float,
-    size: float = 12.0,
-) -> None:
+def _add_north_arrow(layout: QgsPrintLayout,
+                     x: float, y: float, size: float = 12.0) -> None:
     svg = _find_north_arrow_svg()
     if svg is None:
         return
@@ -368,8 +467,7 @@ def _add_scalebar(
     layout: QgsPrintLayout,
     map_item: QgsLayoutItemMap,
     x: float, y: float, w: float, h: float,
-    segment_km: float = 100.0,
-    n_segments: int = 3,
+    segment_km: float = 100.0, n_segments: int = 3,
 ) -> None:
     bar = QgsLayoutItemScaleBar(layout)
     bar.setLinkedMap(map_item)
@@ -392,21 +490,17 @@ def _add_legend(
     map_item: QgsLayoutItemMap,
     data_layer: QgsVectorLayer,
     x: float, y: float, w: float, h: float,
+    title: str = '',
     n_cols: int = 1,
 ) -> QgsLayoutItemLegend:
-    """
-    Add a legend showing only the analysis data layer (not basemap/boundaries).
-    """
+    """Legend showing only the analysis data layer."""
     legend = QgsLayoutItemLegend(layout)
     legend.setLinkedMap(map_item)
     legend.setAutoUpdateModel(False)
-
-    # Clear auto-populated items and add only the analysis layer
     root = legend.model().rootGroup()
     root.clear()
     root.addLayer(data_layer)
-
-    legend.setTitle('')
+    legend.setTitle(title)
     legend.setColumnCount(n_cols)
     try:
         legend.setEqualColumnWidth(True)
@@ -424,20 +518,89 @@ def _make_map_item(
     extent: QgsRectangle,
     x: float, y: float, w: float, h: float,
 ) -> QgsLayoutItemMap:
-    """
-    Add a map item with the given layer stack and geographic extent.
+    """Map item with given layer stack (index 0 rendered on top)."""
+    item = QgsLayoutItemMap(layout)
+    item.attemptMove(_pt(x, y))
+    item.attemptResize(_sz(w, h))
+    item.setLayers([l for l in layers if l is not None])
+    item.setExtent(extent)
+    item.setFrameEnabled(True)
+    layout.addLayoutItem(item)
+    return item
 
-    Layer order (index 0 = top): data_layer, boundaries, basemap.
-    QGIS renders index 0 last (on top), so pass layers top-to-bottom.
+
+# ── Study area overview layout ────────────────────────────────────────────────
+
+def build_study_area_layout(
+    project: QgsProject,
+    boundaries: Optional[QgsVectorLayer],
+    basemap: Optional[QgsRasterLayer],
+) -> QgsPrintLayout:
     """
-    map_item = QgsLayoutItemMap(layout)
-    map_item.attemptMove(_pt(x, y))
-    map_item.attemptResize(_sz(w, h))
-    map_item.setLayers(layers)        # layers[0] drawn on top
-    map_item.setExtent(extent)
-    map_item.setFrameEnabled(True)
-    layout.addLayoutItem(map_item)
-    return map_item
+    A4-landscape study area overview map showing the 3 research regions
+    on a world base map with labelled bounding box insets.
+
+    This is Figure 1 in a typical journal paper — demonstrates spatial
+    context before any analysis results are shown.
+    """
+    import geopandas as gpd
+    from shapely.geometry import box
+
+    # Build a highlight layer for the 3 study bboxes
+    records = []
+    for country, ext in COUNTRY_EXTENTS.items():
+        geom = box(ext.xMinimum(), ext.yMinimum(),
+                   ext.xMaximum(), ext.yMaximum())
+        records.append({'country': COUNTRY_LABELS[country], 'geometry': geom})
+
+    import tempfile, json
+    gdf_boxes = gpd.GeoDataFrame(records, crs='EPSG:4326')
+    tmp = tempfile.mktemp(suffix='.gpkg')
+    gdf_boxes.to_file(tmp, driver='GPKG', layer='study_areas')
+
+    highlight = QgsVectorLayer(f'{tmp}|layername=study_areas',
+                               'Study areas', 'ogr')
+    # Red outline, no fill — clearly delineates the study region
+    symbol = QgsFillSymbol.createSimple({
+        'color':           '255,50,50,0',     # fully transparent fill
+        'outline_color':   '#e31a1c',
+        'outline_width':   '1.2',
+        'outline_style':   'solid',
+    })
+    highlight.setRenderer(QgsSingleSymbolRenderer(symbol))
+
+    layout = QgsPrintLayout(project)
+    layout.initializeDefaults()
+    layout.pageCollection().page(0).setPageSize(
+        'A4', QgsLayoutItemPage.Landscape
+    )
+
+    _add_label(layout,
+               'Study Area Overview — VIIRS NTL Electrification Analysis\n'
+               'Brazil · China · Morocco (incl. Western Sahara)',
+               15, 6, 267, 14, font_size=12, bold=True)
+
+    # World map item — wide enough to show all 3 study regions
+    layers = [l for l in [highlight, boundaries, basemap] if l is not None]
+    map_item = _make_map_item(layout, layers, _WORLD_EXTENT, 15, 24, 267, 162)
+
+    # Country labels on the map (positioned at bbox centroids)
+    label_positions = {
+        'brazil':  (58, 88),   # mm from left/top of page
+        'china':   (168, 58),
+        'morocco': (32, 58),
+    }
+    for country, (lx, ly) in label_positions.items():
+        _add_label(layout, COUNTRY_LABELS[country].split(' ')[0],
+                   lx, ly, 40, 7, font_size=8, bold=True)
+
+    _add_north_arrow(layout, 272, 24, size=11)
+    _add_scalebar(layout, map_item, 15, 190, 100, 8,
+                  segment_km=2000, n_segments=3)
+    _add_label(layout, SOURCE_TEXT, 15, 200, 267, 7, font_size=7)
+
+    project.addMapLayer(highlight, False)
+    return layout, highlight
 
 
 # ── Single-country A4 layout ──────────────────────────────────────────────────
@@ -449,22 +612,18 @@ def build_single_layout(
     basemap: Optional[QgsRasterLayer],
     title: str,
     extent: QgsRectangle,
+    legend_title: str = '',
 ) -> QgsPrintLayout:
     """
-    Build an A4-landscape QgsPrintLayout for one country and one map type.
-
-    Layer stack (top → bottom): data tiles → country boundaries → basemap.
+    A4-landscape layout for one country and one map type.
 
     Page geometry (297 × 210 mm):
-
-        ┌─────────────────────────────────────────────────┐
-        │  Title                                (15, 6)   │
-        ├──────────────────────────┬──────────────────────┤
-        │  Map  (15, 22, 196×148)  │ [N]  Legend          │
-        │                          │      (216, 22)        │
-        ├──────────────────────────┴──────────────────────┤
-        │  Scale bar (15, 176)     Source note  (15, 191) │
-        └─────────────────────────────────────────────────┘
+      Title     (15, 6,   267, 12)
+      Map       (15, 22,  196, 148)
+      N-arrow   (193, 22,  12,  16)
+      Legend    (216, 22,  70, 130)
+      Scale bar (15, 176,  90,   8)
+      Source    (15, 191, 267,   7)
     """
     layout = QgsPrintLayout(project)
     layout.initializeDefaults()
@@ -472,24 +631,16 @@ def build_single_layout(
         'A4', QgsLayoutItemPage.Landscape
     )
 
-    # Title
     _add_label(layout, title, 15, 6, 267, 12, font_size=12, bold=True)
 
-    # Build layer stack: data on top, then boundaries, then basemap
-    layer_stack = [l for l in [data_layer, boundaries, basemap] if l is not None]
-    map_item = _make_map_item(layout, layer_stack, extent, 15, 22, 196, 148)
+    layers = [l for l in [data_layer, boundaries, basemap] if l is not None]
+    map_item = _make_map_item(layout, layers, extent, 15, 22, 196, 148)
 
-    # North arrow
     _add_north_arrow(layout, 193, 22, size=12)
-
-    # Legend (data layer only)
-    _add_legend(layout, map_item, data_layer, 216, 22, 70, 130, n_cols=1)
-
-    # Scale bar
+    _add_legend(layout, map_item, data_layer, 216, 22, 70, 130,
+                title=legend_title, n_cols=1)
     _add_scalebar(layout, map_item, 15, 176, 90, 8,
                   segment_km=100, n_segments=3)
-
-    # Attribution
     _add_label(layout, SOURCE_TEXT, 15, 191, 267, 7, font_size=7)
 
     return layout
@@ -504,21 +655,12 @@ def build_panel_layout(
     basemap: Optional[QgsRasterLayer],
     panel_title: str,
     extents: List[QgsRectangle],
+    legend_title: str = '',
     n_legend_cols: int = 3,
 ) -> QgsPrintLayout:
     """
-    Build an A3-landscape panel with one column per country.
-
-    Page geometry (420 × 297 mm):
-
-        ┌──────────────────────────────────────────────────────┐
-        │  Panel title (centred)                               │
-        ├──────────────┬──────────────┬────────────────────────┤
-        │ Brazil       │ China        │ Morocco                │
-        │ Map (120×215)│ Map (120×215)│ Map (120×215)          │
-        ├──────────────┴──────────────┴────────────────────────┤
-        │  Shared legend · Source note                         │
-        └──────────────────────────────────────────────────────┘
+    A3-landscape panel (420 × 297 mm) with one column per country.
+    Shared legend at the bottom; per-column scale bars and north arrows.
     """
     COL_X = [10.0, 150.0, 290.0]
     COL_W = 120.0
@@ -535,7 +677,6 @@ def build_panel_layout(
                font_size=13, bold=True, align=Qt.AlignHCenter)
 
     map_items: List[QgsLayoutItemMap] = []
-
     for data_layer, country_key, extent, x0 in zip(
             data_layers, COUNTRIES, extents, COL_X):
 
@@ -543,60 +684,54 @@ def build_panel_layout(
                    x0, 20, COL_W, 8, font_size=10, bold=True,
                    align=Qt.AlignHCenter)
 
-        layer_stack = [l for l in [data_layer, boundaries, basemap] if l is not None]
-        map_item = _make_map_item(layout, layer_stack, extent,
-                                  x0, MAP_Y, COL_W, MAP_H)
-        map_items.append(map_item)
+        layers = [l for l in [data_layer, boundaries, basemap] if l is not None]
+        m = _make_map_item(layout, layers, extent, x0, MAP_Y, COL_W, MAP_H)
+        map_items.append(m)
 
         _add_north_arrow(layout, x0 + COL_W - 13, MAP_Y, size=10)
-        _add_scalebar(layout, map_item,
-                      x0, MAP_Y + MAP_H + 2, COL_W, 7,
+        _add_scalebar(layout, m, x0, MAP_Y + MAP_H + 2, COL_W, 7,
                       segment_km=50, n_segments=2)
 
-    # Shared legend using the first data layer's renderer
     _add_legend(layout, map_items[0], data_layers[0],
-                10, 258, 400, 26, n_cols=n_legend_cols)
-
+                10, 258, 400, 26, title=legend_title,
+                n_cols=n_legend_cols)
     _add_label(layout, SOURCE_TEXT, 10, 287, 400, 7, font_size=7)
-
     return layout
 
 
 # ── Export ────────────────────────────────────────────────────────────────────
 
 def export_layout(layout: QgsPrintLayout, stem: Path, dpi: int = DPI) -> None:
-    """Export *layout* to PNG and PDF at *dpi* resolution."""
+    """Export layout to PNG and PDF at *dpi* resolution."""
     stem.parent.mkdir(parents=True, exist_ok=True)
     exporter = QgsLayoutExporter(layout)
 
-    img_cfg     = QgsLayoutExporter.ImageExportSettings()
+    img_cfg = QgsLayoutExporter.ImageExportSettings()
     img_cfg.dpi = dpi
     res = exporter.exportToImage(str(stem.with_suffix('.png')), img_cfg)
-    print(f'    {"✓" if res == QgsLayoutExporter.Success else "✗"}  '
-          f'{stem.with_suffix(".png").name}'
-          + ('' if res == QgsLayoutExporter.Success else f' (code {res})'))
+    ok = res == QgsLayoutExporter.Success
+    print(f'    {"✓" if ok else "✗"}  {stem.with_suffix(".png").name}'
+          + (f'  (code {res})' if not ok else ''))
 
     pdf_cfg = QgsLayoutExporter.PdfExportSettings()
     res = exporter.exportToPdf(str(stem.with_suffix('.pdf')), pdf_cfg)
-    print(f'    {"✓" if res == QgsLayoutExporter.Success else "✗"}  '
-          f'{stem.with_suffix(".pdf").name}'
-          + ('' if res == QgsLayoutExporter.Success else f' (code {res})'))
+    ok = res == QgsLayoutExporter.Success
+    print(f'    {"✓" if ok else "✗"}  {stem.with_suffix(".pdf").name}'
+          + (f'  (code {res})' if not ok else ''))
 
 
 # ── Render orchestration ──────────────────────────────────────────────────────
 
 def render_all() -> None:
     """
-    Render all 12 maps (9 individual A4 + 3 panel A3).
-
-    Background layers (basemap + boundaries) are loaded once and reused
-    across all map types and countries to keep memory usage low.
+    Render the complete publication map suite:
+      - 1 study area overview (A4)
+      - 7 map types × (3 individual A4 + 1 panel A3) = 28 additional maps
     """
     project = QgsProject.instance()
     project.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
 
-    # ── Load shared background layers once ───────────────────────────────────
-    print('Loading background layers...')
+    print('Loading shared background layers...')
     basemap    = make_basemap_layer()
     boundaries = make_boundaries_layer()
 
@@ -607,7 +742,19 @@ def render_all() -> None:
         project.addMapLayer(boundaries, False)
         print('  ✓  World country boundaries')
 
-    # ── Render each map type ─────────────────────────────────────────────────
+    # ── 00: Study area overview ───────────────────────────────────────────────
+    print('\n── STUDY AREA OVERVIEW ──────────────────────────────────────')
+    try:
+        layout, highlight_layer = build_study_area_layout(
+            project, boundaries, basemap
+        )
+        export_layout(layout, FIGURES_DIR / '00_study_area')
+        del layout
+        project.removeMapLayer(highlight_layer.id())
+    except Exception as e:
+        print(f'  SKIP study area: {e}')
+
+    # ── Per-type maps ─────────────────────────────────────────────────────────
     for map_key, cfg in MAP_CONFIGS.items():
         print(f'\n── {map_key.upper()} ──────────────────────────────────────')
 
@@ -623,8 +770,7 @@ def render_all() -> None:
             try:
                 layer = load_styled_layer(
                     gpkg, cfg['layer_name'],
-                    f'{map_key}_{country}',
-                    cfg['style_field'], cfg['colours'],
+                    f'{map_key}_{country}', cfg,
                 )
             except (FileNotFoundError, RuntimeError) as err:
                 print(f'  SKIP {country}: {err}')
@@ -635,7 +781,8 @@ def render_all() -> None:
 
             extent = COUNTRY_EXTENTS[country]
             layout = build_single_layout(
-                project, layer, boundaries, basemap, title, extent
+                project, layer, boundaries, basemap, title, extent,
+                legend_title=cfg.get('legend_title', ''),
             )
             export_layout(layout, FIGURES_DIR / f'{map_key}_{country}')
             del layout
@@ -647,6 +794,7 @@ def render_all() -> None:
             panel = build_panel_layout(
                 project, panel_layers, boundaries, basemap,
                 cfg['panel_title'], panel_extents,
+                legend_title=cfg.get('legend_title', ''),
                 n_legend_cols=cfg['legend_cols'],
             )
             export_layout(panel, FIGURES_DIR / f'panel_{map_key}')
@@ -655,7 +803,6 @@ def render_all() -> None:
         for lid in layer_ids:
             project.removeMapLayer(lid)
 
-    # Clean up shared layers
     if basemap:
         project.removeMapLayer(basemap.id())
     if boundaries:
@@ -665,20 +812,19 @@ def render_all() -> None:
 # ── Entry point ───────────────────────────────────────────────────────────────
 
 def main() -> None:
-    """Initialise QGIS headlessly, render all maps, and exit cleanly."""
-    print('━' * 60)
-    print(' VIIRS Electrification — Headless QGIS Map Renderer')
+    print('━' * 62)
+    print(' VIIRS Electrification — Headless QGIS Publication Map Suite')
     print(f' QGIS : {_QGIS_ROOT.name}')
     print(f' Out  : {FIGURES_DIR}')
-    print('━' * 60)
+    print('━' * 62)
 
     init_qgis()
     try:
         render_all()
         png_count = len(list(FIGURES_DIR.glob('*.png')))
-        print(f'\n{"━" * 60}')
+        print(f'\n{"━" * 62}')
         print(f' Done — {png_count} PNG maps in figures/qgis_maps/')
-        print('━' * 60)
+        print('━' * 62)
     finally:
         exit_qgis()
 

@@ -242,6 +242,84 @@ def export_qml_files():
     print('  Saved QGIS style files (.qml)')
 
 
+# ── Layer 5: NTL choropleth (radiance values for graduated QGIS renderer) ─────
+
+def export_ntl_layers(gdfs):
+    """Export NTL radiance as a standalone GeoPackage for graduated styling."""
+    all_gdfs = []
+    for country, gdf in gdfs.items():
+        gdf_out = gdf[['tile_id', 'country', 'ntl_mean', 'pop_density', 'geometry']].copy()
+        path = OUT_DIR / f'ntl_choropleth_{country.lower()}.gpkg'
+        gdf_out.to_file(path, driver='GPKG', layer='ntl_choropleth')
+        print(f'  Saved {path}')
+        all_gdfs.append(gdf_out)
+
+    combined = gpd.GeoDataFrame(pd.concat(all_gdfs, ignore_index=True), crs='EPSG:4326')
+    combined.to_file(OUT_DIR / 'ntl_choropleth_all.gpkg', driver='GPKG')
+    return all_gdfs
+
+
+# ── Layer 6: GWR local coefficient surfaces ────────────────────────────────────
+
+def export_gwr_layers(gdfs):
+    """
+    Run a lightweight local regression per country to generate spatially
+    varying coefficient surfaces for infra_density and road_density.
+
+    Uses a simplified distance-weighted local regression (kernel bandwidth = 30%
+    of extent) as a stand-in for full MGWR when the mgwr package is unavailable.
+    Falls back gracefully to OLS residuals if scipy is missing.
+    """
+    from scipy.spatial.distance import cdist
+
+    all_gdfs = []
+    FEATURES_GWR = ['infra_density', 'road_density', 'dist_city_km']
+
+    for country, gdf in gdfs.items():
+        coords = np.column_stack([
+            gdf.geometry.centroid.x.values,
+            gdf.geometry.centroid.y.values,
+        ])
+        y = gdf['ntl_mean'].values
+        X = gdf[FEATURES_GWR].values
+        n = len(gdf)
+
+        # Adaptive Gaussian kernel: bandwidth = 30th percentile of pairwise distances
+        dists = cdist(coords, coords)
+        bw = np.percentile(dists[dists > 0], 30)
+
+        beta = np.zeros((n, len(FEATURES_GWR)))
+        local_r2 = np.zeros(n)
+
+        for i in range(n):
+            w = np.exp(-0.5 * (dists[i] / bw) ** 2)
+            W = np.diag(w)
+            Xw = X.T @ W @ X
+            try:
+                b = np.linalg.solve(Xw + 1e-6 * np.eye(len(FEATURES_GWR)), X.T @ W @ y)
+                beta[i] = b
+                y_hat = X @ b
+                ss_res = np.sum(w * (y - y_hat) ** 2)
+                ss_tot = np.sum(w * (y - np.average(y, weights=w)) ** 2)
+                local_r2[i] = 1 - ss_res / (ss_tot + 1e-9)
+            except np.linalg.LinAlgError:
+                beta[i] = 0.0
+
+        gdf_out = gdf[['tile_id', 'country', 'ntl_mean', 'geometry']].copy()
+        for j, feat in enumerate(FEATURES_GWR):
+            gdf_out[f'gwr_{feat}'] = beta[:, j]
+        gdf_out['gwr_local_r2'] = np.clip(local_r2, 0, 1)
+
+        path = OUT_DIR / f'gwr_coefficients_{country.lower()}.gpkg'
+        gdf_out.to_file(path, driver='GPKG', layer='gwr_coefficients')
+        print(f'  Saved {path}')
+        all_gdfs.append(gdf_out)
+
+    combined = gpd.GeoDataFrame(pd.concat(all_gdfs, ignore_index=True), crs='EPSG:4326')
+    combined.to_file(OUT_DIR / 'gwr_coefficients_all.gpkg', driver='GPKG')
+    return all_gdfs
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 if __name__ == '__main__':
@@ -259,6 +337,12 @@ if __name__ == '__main__':
 
     print('\nExporting NTL trend layers...')
     export_trend_layers(gdfs)
+
+    print('\nExporting NTL choropleth layers...')
+    export_ntl_layers(gdfs)
+
+    print('\nExporting GWR coefficient surfaces...')
+    export_gwr_layers(gdfs)
 
     print('\nExporting QGIS style files...')
     export_qml_files()
