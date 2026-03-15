@@ -3,7 +3,8 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://python.org)
 [![GEE](https://img.shields.io/badge/Google_Earth_Engine-JS%20API-brightgreen)](https://earthengine.google.com)
-[![QGIS](https://img.shields.io/badge/QGIS-3.28_LTR-green)](https://qgis.org)
+[![QGIS](https://img.shields.io/badge/QGIS-3.40_LTR-green)](https://qgis.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-App-red)](https://streamlit.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Citation](https://img.shields.io/badge/Cite-CITATION.cff-orange)](CITATION.cff)
 
@@ -29,7 +30,7 @@ The full analytical pipeline spans:
 | **Interpretable ML** | XGBoost with SHAP TreeExplainer, bootstrap uncertainty (n=200) |
 | **Temporal analysis** | Mann-Kendall trend test, Theil-Sen slope, CUSUM change-point detection |
 | **Inequality & SDG 7** | Gini coefficient, Lorenz curves, Theil T decomposition, SDG 7 gap projections |
-| **GIS / Cartography** | GeoPackage + QML exports for QGIS 3.28, print layouts at 300 DPI |
+| **GIS / Cartography** | Headless PyQGIS renderer (QGIS 3.40) — 12 maps at 300 DPI, automated via `QgsPrintLayout` |
 | **GEE JavaScript** | Cloud-based VIIRS + WorldPop + GHSL + road density export pipeline |
 
 The analysis is framed around **UN SDG 7** (Affordable and Clean Energy) and provides
@@ -129,6 +130,9 @@ viirs-electrification/
 │   ├── gwr_analysis.py            # GWR + MGWR via mgwr 2.2 — local coefficients
 │   ├── inequality.py              # Gini, Lorenz, Theil T, SDG 7 projections
 │   ├── export_qgis_layers.py      # Export all layers as GeoPackage + QML for QGIS
+│   ├── qgis_render.py             # Headless PyQGIS renderer — 12 maps, 300 DPI PNG + PDF
+│   ├── run_qgis_render.bat        # OSGeo4W wrapper to invoke qgis_render.py
+│   ├── sdg7_tracker.py            # SDG 7 attainment scoring + projection helpers
 │   └── qgis_workflow.md           # QGIS cartography guide (symbology, print layouts)
 │
 ├── notebooks/
@@ -137,14 +141,28 @@ viirs-electrification/
 │   ├── 03_ml_shap.ipynb           # XGBoost + SHAP + uncertainty maps
 │   ├── 04_temporal_trends.ipynb   # Trend detection + change-point analysis
 │   ├── 05_gwr.ipynb               # GWR/MGWR local coefficient surfaces
-│   └── 06_inequality_sdg7.ipynb   # Gini, Lorenz, Theil T, SDG 7 projections
+│   ├── 06_inequality_sdg7.ipynb   # Gini, Lorenz, Theil T, SDG 7 projections
+│   ├── 07_interactive_maps.ipynb  # Folium choropleth + LISA + energy poverty HTML maps
+│   ├── 08_pydeck_3d_ntl.ipynb     # 3D PyDeck NTL visualisations per country
+│   ├── 09_bivariate_map.ipynb     # Bivariate NTL × population choropleth
+│   ├── 10_temporal_animation.ipynb # GIF animations of VIIRS NTL 2014–2023
+│   ├── 11_sdg7_progress_tracker.ipynb # SDG 7 gap analysis + 2030 projections
+│   └── 12_validation_official_stats.ipynb # Out-of-sample validation vs. IEA/World Bank
+│
+├── app/                           # Streamlit dashboard (run: streamlit run app/Home.py)
+│   ├── Home.py                    # Landing page — abstract, key metrics, figure gallery
+│   └── pages/
+│       ├── 1_NTL_Explorer.py      # Interactive VIIRS explorer by country / year
+│       └── 2_SDG7_Tracker.py      # SDG 7 attainment dashboard + projections
 │
 ├── data/
 │   ├── raw/                       # GEE CSV exports (see notebooks/01 for instructions)
 │   ├── processed/                 # GeoPackage layers + Parquet files
 │   └── README.md                  # Data download instructions
 │
-├── figures/                       # All generated figures (PNG, 150 DPI)
+├── figures/
+│   ├── qgis_maps/                 # 12 QGIS print layouts (A4 + A3 panel, PNG + PDF)
+│   └── *.png                      # All other analysis figures (300 DPI)
 ├── CITATION.cff                   # Machine-readable citation metadata
 ├── requirements.txt
 └── README.md
@@ -229,6 +247,12 @@ jupyter notebook notebooks/06_inequality_sdg7.ipynb
 
 # Export QGIS-ready GeoPackages
 python scripts/export_qgis_layers.py
+
+# Render publication maps headlessly (Windows — QGIS 3.40 required)
+scripts\run_qgis_render.bat
+
+# Launch the Streamlit dashboard
+streamlit run app/Home.py
 ```
 
 > **No GEE account?** All notebooks fall back to spatially-correlated synthetic data
@@ -239,7 +263,18 @@ python scripts/export_qgis_layers.py
 
 ## QGIS Workflow
 
-Publication-quality cartographic maps are produced in **QGIS 3.28 LTR** from GeoPackage outputs.
+Publication-quality maps are produced from GeoPackage outputs using **QGIS 3.40 LTR**.
+Two modes are available:
+
+**Automated (headless — no GUI required):**
+```bash
+scripts\run_qgis_render.bat
+```
+Generates 12 maps at 300 DPI (9 individual A4 + 3 three-country A3 panels) in both PNG
+and PDF, saved to `figures/qgis_maps/`. Uses `QgsPrintLayout` with north arrow,
+scale bar, categorized legend, and attribution via PyQGIS.
+
+**Manual (interactive QGIS GUI):**
 See [`scripts/qgis_workflow.md`](scripts/qgis_workflow.md) for:
 
 - Loading `data/processed/*_all.gpkg` files (QML styles auto-apply)
